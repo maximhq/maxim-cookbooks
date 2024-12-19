@@ -3,3 +3,4 @@
 # virtual envs
 mx-prompt-management
 .env
+__pycache__
