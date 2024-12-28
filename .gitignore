@@ -4,3 +4,4 @@
 mx-prompt-management
 .env
 __pycache__
+agents/LangGraph agent/env.example
