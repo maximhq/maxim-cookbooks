@@ -5,3 +5,7 @@ mx-prompt-management
 .env
 __pycache__
 agents/LangGraph agent/env.example
+
+
+node_modules
+package-lock.json

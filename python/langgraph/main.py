@@ -120,13 +120,13 @@ workflow.add_conditional_edges(
     },
 )
 
+logger = Maxim(Config(api_key=apiKey, debug=True, base_url=baseUrl)).logger(
+    LoggerConfig(id=repoId)
+)
+
 # We now add a normal edge from `tools` to `agent`.
 # This means that after `tools` is called, `agent` node is called next.
 workflow.add_edge("action", "agent")
-
-logger = Maxim(Config(api_key=apiKey, debug=True)).logger(
-    LoggerConfig(id=repoId)
-)
 
 # Finally, we compile it!
 # This compiles it into a LangChain Runnable,
@@ -135,11 +135,11 @@ app = workflow.compile()
 flask_app = Flask(__name__)
 
 
-@span(name="another_method")
+@span(name="another-method-span")
 def another_method(query:str)->str:
     return query
 
-@langgraph_agent(name="agent-v1")
+@langgraph_agent(name="movie-agent-v1")
 async def ask_agent(query: str) -> str:
     config = {"recursion_limit": 50, "callbacks": [langchain_callback()]}
     async for event in app.astream(input={"messages": [query]}, config=config):
@@ -150,11 +150,11 @@ async def ask_agent(query: str) -> str:
 
 
 @flask_app.post("/chat")
-@trace(logger=logger, name="chat-v1-handler")
+@trace(logger=logger, name="movie-chat-v1")
 async def handle():
     resp = await ask_agent(request.json["query"])
     current_trace().set_output(str(resp))
-    await another_method(str(resp))
+    another_method(str(resp))
     return jsonify({"result": resp})
 
 

@@ -9,9 +9,8 @@ from langchain.chat_models.openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_community.vectorstores import Weaviate
 from maxim import Config, Maxim
-from maxim.decorators import (current_retrieval, current_trace,
-                              langchain_callback, langchain_llm_call,
-                              retrieval, trace)
+from maxim.decorators import current_retrieval, current_trace, retrieval, trace
+from maxim.decorators.langchain import langchain_callback, langchain_llm_call
 from maxim.logger import LoggerConfig
 
 maxim_api_key = os.environ.get("MAXIM_API_KEY", "")
@@ -42,7 +41,6 @@ app = Flask(__name__)
 
 @retrieval(name="weaviate-call")
 def retrieve_docs(query: str):
-    current_retrieval().input(query)
     collection = client.collections.get("Awesome_moviate_movies")
     response = collection.query.near_text(query=query, limit=3)
     docs = [
@@ -60,7 +58,7 @@ def retrieve_docs(query: str):
 
 
 @langchain_llm_call(name="llm-call")
-def execute(query: str):    
+def execute(query: str):
     context = retrieve_docs(query)
     messages = [
         (
@@ -73,7 +71,7 @@ def execute(query: str):
     return result.content
 
 
-@app.post("/api/v1/chat")
+@app.post("/chat")
 @trace(logger=logger, name="movie-chat-v1")
 def handler():
     print(current_trace().id)
