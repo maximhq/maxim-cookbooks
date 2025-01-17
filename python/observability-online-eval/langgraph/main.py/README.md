@@ -1,1 +1,1 @@
-302 - [Moved to](https://github.com/maximhq/maxim-cookbooks/blob/main/python/langgraph/tavily-search/main.py)
+[Moved here](https://github.com/maximhq/maxim-cookbooks/blob/main/python/langgraph/tavily-search/main.py)
