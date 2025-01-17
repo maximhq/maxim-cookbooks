@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO)
 
 maxim = Maxim(
     config=Config(
-        api_key=maxim_api_key, debug=True, base_url="https://app.beta.getmaxim.ai"
+        api_key=maxim_api_key, debug=True
     )
 )
 logger = maxim.logger(LoggerConfig(id=log_repo_id))
