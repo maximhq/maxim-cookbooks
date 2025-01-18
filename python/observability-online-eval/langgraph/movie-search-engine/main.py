@@ -4,7 +4,7 @@ import os
 from functools import lru_cache
 from typing import Annotated, List, Literal, Sequence, Tuple, TypedDict, Union
 from uuid import uuid4
-
+import asyncio
 import dotenv
 import weaviate
 from flask import Flask, jsonify, request
@@ -17,9 +17,17 @@ from langchain_weaviate import WeaviateVectorStore
 from langgraph.graph import END, START, StateGraph, add_messages
 from langgraph.prebuilt import ToolNode
 
+from maxim import Config, Maxim
+from maxim.decorators import current_trace, span, trace, current_span
+from maxim.logger.components.span import Span, SpanConfig
+from maxim.logger.components.trace import Trace
+from maxim.decorators.langchain import langchain_callback, langgraph_agent
+from maxim.logger import LoggerConfig
+
+
 logging.basicConfig(level=logging.INFO)
 
-dotenv.load_dotenv("../../../../.env")
+dotenv.load_dotenv()
 
 # Environment variables
 weaviate_url = os.environ.get("WEAVIATE_URL", "")
@@ -28,10 +36,19 @@ openai_key = os.environ.get("OPENAI_API_KEY", "")
 anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
 tavily_api_key = os.environ.get("TAVILY_API_KEY", "")
 
+maxim_api_key = os.environ.get("MAXIM_API_KEY", "")
+maxim_base_url = os.environ.get("MAXIM_BASE_URL", "")
+maxim_repo_id = os.environ.get("MAXIM_LOG_REPO_ID", "")
+
+logger = Maxim(Config(api_key=maxim_api_key, debug=True, base_url=maxim_base_url)).logger(
+    LoggerConfig(id=maxim_repo_id)
+)
+
 # Initialize Weaviate client
 client = weaviate.connect_to_weaviate_cloud(
     cluster_url=weaviate_url,
     auth_credentials=weaviate.auth.AuthApiKey(api_key=weaviate_key),
+    skip_init_checks=True
 )
 
 # Initialize vector store and retriever
@@ -200,29 +217,93 @@ workflow.add_edge("search", "agent")
 
 # Compile the workflow
 app = workflow.compile()
-
 # Flask application
 flask_app = Flask(__name__)
+trace_id = str(uuid4())
 
+# @span(name="retieve")
+# def retriever_span(k,v)->None:
+#     print("Here in Retrieve")
+#     current_span().event(str(uuid4()), f"{k}",{})
 
+# @span(name="search")
+# def search_span(k,v)->None:
+#     print("Here in Search")
+#     current_span().event(str(uuid4()), f"{k}",{})
 
+# @span(logger=logger,trace_id=trace_id,name="agent")
+# def agent_span(k,v)->None:
+#     print("Here in Agent")
+#     current_span().event(str(uuid4()), f"{k}",{})
+def serialize_tool_call(tool_call):
+    """Helper function to serialize tool calls"""
+    if tool_call is None:
+        return None
+    
+    return {
+        "content": tool_call.content,
+        "type": "tool_call",
+        **({"id": tool_call.id} if hasattr(tool_call, "id") else {}),
+        **({"tool_call_id": tool_call.tool_call_id} if hasattr(tool_call, "tool_call_id") else {})
+    }
+
+def serialize_message(message):
+    """Helper function to serialize AIMessage objects"""
+    if message is None:
+        return None
+    
+    return {
+        "content": message.content,
+        "type": message.type,
+        # Only include other fields if they exist and are not None
+        **({"additional_kwargs": message.additional_kwargs} if hasattr(message, "additional_kwargs") else {}),
+        **({"tool_calls": message.tool_calls} if hasattr(message, "tool_calls") else {}),
+        **({"id": message.id} if hasattr(message, "id") else {})
+    }
+
+@langgraph_agent(name="movie-agent-v1")
+async def ask_agent(trace:Trace,initial_state:dict,query: str) -> str:
+    config = {"callbacks": [langchain_callback()]}
+    async for event in app.astream(input=initial_state, config=config):
+        print('*'*50)
+        print(event)
+        print('*'*50)
+        for k, v in event.items():
+            # if k == "retrieve":
+                # retriever_span(k,v)
+                # message_dict = serialize_tool_call(v['messages'][0])
+                # serialized_event = json.dumps(message_dict)
+                # print(f"serialized retrieve tool call {serialized_event}")
+                # span = trace.span(SpanConfig(id=str(uuid4()), name=f"retrieve"))
+                # span.event(str(uuid4()), f"{k}",{k:serialized_event})
+            # if k == "search":
+                # search_span(k,v)
+                # span = trace.span(SpanConfig(id=str(uuid4()), name=f"search-{str(uuid4())}"))
+            if k == "agent":
+                # agent_span(k,v)
+                message_dict = serialize_message(v['messages'][0])
+                serialized_event = json.dumps(message_dict)
+                print(f"serialized event {serialized_event}")
+                span = trace.span(SpanConfig(id=str(uuid4()), name=f"agent"))
+                span.event(str(uuid4()), f"{k}",{k:serialized_event})
+                response = str(v["messages"][0].content)
+    return response
 
 @flask_app.post("/chat")
+@trace(logger=logger, name="movie-search-v1")
 async def chat():
     try:
         query = request.json["query"]
         initial_state = {
-            "messages": [HumanMessage(content=query)],
+            "messages": query,
             "retriever_tried": False,
         }
-
-        response = ""
-        async for event in app.astream(
-            input=initial_state, config={"configurable": {"model_name": "anthropic"}}
-        ):
-            for k, v in event.items():
-                if k == "agent":
-                    response = str(v["messages"][0].content)
+        trace = current_trace()
+        response = await ask_agent(trace,initial_state,query)
+        trace.set_input(query)
+        trace.set_output(str(response))
+        trace.attach_evaluators(evaluators=['Bias','Output Relevance','isMoviePresent'])
+        trace.with_variables(for_evaluators=['Bias','Output Relevance','isMoviePresent'],variables={'input':query,'output':response,"expectedOutput":""})
 
         return jsonify({"result": response})
     except Exception as e:
@@ -232,4 +313,4 @@ async def chat():
 print(app.get_graph().draw_mermaid())
 
 if __name__ == "__main__":
-    flask_app.run(port=8000)
+    flask_app.run(port=8000,debug=True)
