@@ -124,7 +124,7 @@ def should_continue(state: AgentState) -> str:
 def call_model(state: AgentState, config: dict) -> dict:
     """Call the LLM with the current state."""
     messages = state["messages"]
-    model_name = config.get("configurable", {}).get("model_name", "anthropic")
+    model_name = config.get("configurable", {}).get("model_name", "openai")
     model = get_model(model_name)
 
     # Add system prompt
