@@ -4,7 +4,7 @@ import os
 from functools import lru_cache
 from typing import Annotated, List, Literal, Sequence, Tuple, TypedDict, Union
 from uuid import uuid4
-import asyncio
+import time
 import dotenv
 import weaviate
 from flask import Flask, jsonify, request
@@ -16,16 +16,23 @@ from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_weaviate import WeaviateVectorStore
 from langgraph.graph import END, START, StateGraph, add_messages
 from langgraph.prebuilt import ToolNode
+from langchain_core.messages import AIMessage,ToolMessage
 
 from maxim import Config, Maxim
 from maxim.decorators import current_trace, span, trace, current_span
 from maxim.logger.components.span import Span, SpanConfig
 from maxim.logger.components.trace import Trace
+from maxim.logger.components.toolCall import ToolCallConfig, ToolCall
+from maxim.logger.components.generation import Generation,GenerationConfig
 from maxim.decorators.langchain import langchain_callback, langgraph_agent
 from maxim.logger import LoggerConfig
 
+logging.getLogger('maxim').setLevel(logging.ERROR)
+logging.getLogger('MaximSDK').setLevel(logging.ERROR)
+logging.getLogger('maxim-py').setLevel(logging.ERROR)
 
-logging.basicConfig(level=logging.INFO)
+logging.getLogger('httpx').setLevel(logging.ERROR) 
+logging.basicConfig(level=logging.ERROR)
 
 dotenv.load_dotenv()
 
@@ -120,6 +127,9 @@ def should_continue(state: AgentState) -> str:
     # If we've already tried both or found an answer, end
     return "end"
 
+system_prompt = """You are a helpful movie information assistant. You have search_movie and tavily search tools.
+    Priorotise database search but if you need to do a general search, use tavily search. Make sure your answer is valid irrespective of the search.    
+    Always provide clear, concise answers."""
 
 def call_model(state: AgentState, config: dict) -> dict:
     """Call the LLM with the current state."""
@@ -235,64 +245,94 @@ trace_id = str(uuid4())
 # def agent_span(k,v)->None:
 #     print("Here in Agent")
 #     current_span().event(str(uuid4()), f"{k}",{})
-def serialize_tool_call(tool_call):
-    """Helper function to serialize tool calls"""
-    if tool_call is None:
-        return None
+# def serialize_tool_call(tool_call):
+#     """Helper function to serialize tool calls"""
+#     if tool_call is None:
+#         return None
     
-    return {
-        "content": tool_call.content,
-        "type": "tool_call",
-        **({"id": tool_call.id} if hasattr(tool_call, "id") else {}),
-        **({"tool_call_id": tool_call.tool_call_id} if hasattr(tool_call, "tool_call_id") else {})
-    }
+#     return {
+#         "content": tool_call.content,
+#         "type": "tool_call",
+#         **({"id": tool_call.id} if hasattr(tool_call, "id") else {}),
+#         **({"tool_call_id": tool_call.tool_call_id} if hasattr(tool_call, "tool_call_id") else {})
+#     }
 
-def serialize_message(message):
-    """Helper function to serialize AIMessage objects"""
-    if message is None:
-        return None
+# def serialize_message(message):
+#     """Helper function to serialize AIMessage objects"""
+#     if message is None:
+#         return None
     
-    return {
-        "content": message.content,
-        "type": message.type,
-        # Only include other fields if they exist and are not None
-        **({"additional_kwargs": message.additional_kwargs} if hasattr(message, "additional_kwargs") else {}),
-        **({"tool_calls": message.tool_calls} if hasattr(message, "tool_calls") else {}),
-        **({"id": message.id} if hasattr(message, "id") else {})
-    }
+#     return {
+#         "content": message.content,
+#         "type": message.type,
+#         # Only include other fields if they exist and are not None
+#         **({"additional_kwargs": message.additional_kwargs} if hasattr(message, "additional_kwargs") else {}),
+#         **({"tool_calls": message.tool_calls} if hasattr(message, "tool_calls") else {}),
+#         **({"id": message.id} if hasattr(message, "id") else {})
+#     }
+
+def handle_tool_call(k,v,trace:Trace,tool_call_config:ToolCallConfig):
+    if tool_call_config is None:
+        return
+    message:ToolMessage = v['messages'][0]
+    serialized_event = message.to_json()
+    tool_call = trace.tool_call(tool_call_config)
+    tool_call.result(result = serialized_event['kwargs']['content'])
+
+def handle_agent_logging(k,v,trace:Trace)->ToolCallConfig|None:
+    message:AIMessage = v['messages'][0]
+    serialized_event = message.to_json()
+    messages=[{"role":"system","content":system_prompt}]
+    if len(serialized_event['kwargs']['tool_calls'])!=0:
+        messages.append({"role": "user", "content":serialized_event['kwargs']['tool_calls'][0]['args']['query']})
+    generation_config:GenerationConfig = GenerationConfig(id=str(uuid4()), name="generation", provider="openai", 
+                                             model="gpt-4", model_parameters={"temperature": 0},
+                                             messages=messages) 
+    generation:Generation = trace.generation(generation_config)
+    generation.result(message)
+    
+    if len(serialized_event['kwargs']['tool_calls'])!=0:
+        tool_config:ToolCallConfig = ToolCallConfig(id=serialized_event['kwargs']['tool_calls'][0]['id'],
+                                                    name=serialized_event['kwargs']['tool_calls'][0]['name'],
+                                                    args=str(serialized_event['kwargs']['tool_calls'][0]['args']),
+                                                    description=serialized_event['kwargs']['tool_calls'][0]['name'])
+        return tool_config
+    return None
 
 @langgraph_agent(name="movie-agent-v1")
 async def ask_agent(trace:Trace,initial_state:dict,query: str) -> str:
-    config = {"callbacks": [langchain_callback()]}
+    config = {"callbacks": []}#langchain_callback()
+    # span = trace.span(SpanConfig(id=str(uuid4()), name=f"Agent Call Log"))
     async for event in app.astream(input=initial_state, config=config):
-        print('*'*50)
-        print(event)
-        print('*'*50)
         for k, v in event.items():
-            # if k == "retrieve":
+            if k == "retrieve":
                 # retriever_span(k,v)
-                # message_dict = serialize_tool_call(v['messages'][0])
-                # serialized_event = json.dumps(message_dict)
-                # print(f"serialized retrieve tool call {serialized_event}")
-                # span = trace.span(SpanConfig(id=str(uuid4()), name=f"retrieve"))
-                # span.event(str(uuid4()), f"{k}",{k:serialized_event})
-            # if k == "search":
+                trace.event(str(uuid4()), f"retriever start",{})
+                time.sleep(2)
+                handle_tool_call(k,v,trace,tool_call_config)
+                time.sleep(2)
+                trace.event(str(uuid4()), f"retriever end",{})
+            if k == "search":
                 # search_span(k,v)
-                # span = trace.span(SpanConfig(id=str(uuid4()), name=f"search-{str(uuid4())}"))
+                trace.event(str(uuid4()), f"search start",{})
+                time.sleep(2)
+                handle_tool_call(k,v,trace,tool_call_config)
+                trace.sleep(2)
+                trace.event(str(uuid4()), f"search end",{})
+
             if k == "agent":
                 # agent_span(k,v)
-                message_dict = serialize_message(v['messages'][0])
-                serialized_event = json.dumps(message_dict)
-                print(f"serialized event {serialized_event}")
-                span = trace.span(SpanConfig(id=str(uuid4()), name=f"agent"))
-                span.event(str(uuid4()), f"{k}",{k:serialized_event})
+                trace.event(str(uuid4()), f"agent start",{})
+                time.sleep(2)
+                tool_call_config:ToolCallConfig = handle_agent_logging(k,v,trace)
+                time.sleep(2)
+                trace.event(str(uuid4()), f"agent end",{})
                 response = str(v["messages"][0].content)
     return response
 
 @flask_app.post("/chat")
 @trace(logger=logger, name="movie-search-v1")
 async def chat():
-    try:
         query = request.json["query"]
         initial_state = {
             "messages": query,
@@ -302,13 +342,14 @@ async def chat():
         response = await ask_agent(trace,initial_state,query)
         trace.set_input(query)
         trace.set_output(str(response))
-        trace.attach_evaluators(evaluators=['Bias','Output Relevance','isMoviePresent'])
-        trace.with_variables(for_evaluators=['Bias','Output Relevance','isMoviePresent'],variables={'input':query,'output':response,"expectedOutput":""})
+        evaluator_to_run = ['Bias','Output Relevance']
+        trace.attach_evaluators(evaluators=evaluator_to_run)
+        trace.with_variables(for_evaluators=evaluator_to_run,variables={'input':query,'output':response})
 
         return jsonify({"result": response})
-    except Exception as e:
-        logging.error(f"Chat endpoint error: {e}")
-        return jsonify({"error": str(e)}), 500
+    # except Exception as e:
+    #     logging.error(f"Chat endpoint error: {e}")
+    #     return jsonify({"error": str(e)}), 500
 
 print(app.get_graph().draw_mermaid())
 
