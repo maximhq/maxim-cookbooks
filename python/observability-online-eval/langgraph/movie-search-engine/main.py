@@ -271,7 +271,7 @@ trace_id = str(uuid4())
 #         **({"id": message.id} if hasattr(message, "id") else {})
 #     }
 
-def handle_tool_call(k,v,trace:Trace,tool_call_config:ToolCallConfig):
+def handle_tool_call(k,v,tool_call_config:ToolCallConfig):
     if tool_call_config is None:
         return
     message:ToolMessage = v['messages'][0]
@@ -300,46 +300,36 @@ def handle_agent_logging(k,v,trace:Trace)->ToolCallConfig|None:
     return None
 
 @langgraph_agent(name="movie-agent-v1")
-async def ask_agent(trace:Trace,initial_state:dict,query: str) -> str:
-    config = {"callbacks": []}#langchain_callback()
+async def ask_agent(initial_state:dict,query: str) -> str:
+    config = {"callbacks": [langchain_callback()]}#langchain_callback()
     # span = trace.span(SpanConfig(id=str(uuid4()), name=f"Agent Call Log"))
+    # trace = current_trace()
     async for event in app.astream(input=initial_state, config=config):
         for k, v in event.items():
-            if k == "retrieve":
+            # if k == "retrieve":
                 # retriever_span(k,v)
-                trace.event(str(uuid4()), f"retriever start",{})
-                time.sleep(2)
-                handle_tool_call(k,v,trace,tool_call_config)
-                time.sleep(2)
-                trace.event(str(uuid4()), f"retriever end",{})
-            if k == "search":
+                # handle_tool_call(k,v,tool_call_config)
+            # if k == "search":
                 # search_span(k,v)
-                trace.event(str(uuid4()), f"search start",{})
-                time.sleep(2)
-                handle_tool_call(k,v,trace,tool_call_config)
-                trace.sleep(2)
-                trace.event(str(uuid4()), f"search end",{})
+                # handle_tool_call(k,v,trace,tool_call_config)
 
             if k == "agent":
                 # agent_span(k,v)
-                trace.event(str(uuid4()), f"agent start",{})
-                time.sleep(2)
-                tool_call_config:ToolCallConfig = handle_agent_logging(k,v,trace)
-                time.sleep(2)
-                trace.event(str(uuid4()), f"agent end",{})
+                # tool_call_config:ToolCallConfig = handle_agent_logging(k,v,trace)
                 response = str(v["messages"][0].content)
     return response
 
 @flask_app.post("/chat")
 @trace(logger=logger, name="movie-search-v1")
 async def chat():
+    try:
         query = request.json["query"]
         initial_state = {
             "messages": query,
             "retriever_tried": False,
         }
         trace = current_trace()
-        response = await ask_agent(trace,initial_state,query)
+        response = await ask_agent(initial_state,query)
         trace.set_input(query)
         trace.set_output(str(response))
         evaluator_to_run = ['Bias','Output Relevance']
@@ -347,9 +337,9 @@ async def chat():
         trace.with_variables(for_evaluators=evaluator_to_run,variables={'input':query,'output':response})
 
         return jsonify({"result": response})
-    # except Exception as e:
-    #     logging.error(f"Chat endpoint error: {e}")
-    #     return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        logging.error(f"Chat endpoint error: {e}")
+        return jsonify({"error": str(e)}), 500
 
 print(app.get_graph().draw_mermaid())
 
