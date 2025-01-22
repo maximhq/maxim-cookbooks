@@ -9,3 +9,7 @@ agents/LangGraph agent/env.example
 
 node_modules
 package-lock.json
+chroma_db/
+*chroma_db*/
+*.db/
+*.db
