@@ -14,6 +14,10 @@ async function main() {
     });
     const logger = await maxim.logger({ id: repoId });
 
+    if (!logger) {
+        throw new Error("Failed to create logger");
+    }
+
     const maximTracer = new MaximLangchainTracer(logger);
 
     const llm = new AzureChatOpenAI({

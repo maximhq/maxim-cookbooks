@@ -9,8 +9,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@maximai/maxim-js": "^6.0.2",
-    "@maximai/maxim-js-langchain": "0.2.4",
+    "@maximai/maxim-js": "^6.1.2",
+    "@maximai/maxim-js-langchain": "^1.0.0",
     "@langchain/openai": "^0.3.16",
     "@langchain/anthropic": "^0.3.11",
     "@langchain/aws": "^0.1.3",
