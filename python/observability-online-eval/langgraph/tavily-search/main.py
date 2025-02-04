@@ -25,7 +25,7 @@ openAIKey = os.environ.get("OPENAI_API_KEY", None)
 anthropicApiKey = os.environ.get("ANTHROPIC_API_KEY", None)
 apiKey = os.environ.get("MAXIM_API_KEY", None)
 baseUrl = os.environ.get("MAXIM_BASE_URL", None)
-repoId = os.environ.get("LOG_REPO_ID", None)
+repoId = os.environ.get("MAXIM_LOG_REPO_ID", None)
 tavilyApiKey = os.environ.get("TAVILY_API_KEY", None)
 
 
@@ -156,6 +156,8 @@ async def handle():
     current_trace().set_output(str(resp))
     another_method(str(resp))
     return jsonify({"result": resp})
+
+print(app.get_graph().draw_mermaid())
 
 
 flask_app.run(port=8000)
