@@ -12,27 +12,16 @@ from flask import Flask, jsonify, request
 from langchain.tools.retriever import create_retriever_tool
 from langchain_anthropic import ChatAnthropic
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_core.messages import (AIMessage, BaseMessage, HumanMessage,
+from langchain_core.messages import (BaseMessage,
                                      ToolMessage)
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_weaviate import WeaviateVectorStore
 from langgraph.graph import END, START, StateGraph, add_messages
 from langgraph.prebuilt import ToolNode
 from maxim import Config, Maxim
-from maxim.decorators import current_span, current_trace, span, trace
+from maxim.decorators import current_trace, trace
 from maxim.decorators.langchain import langchain_callback, langgraph_agent
 from maxim.logger import LoggerConfig
-from maxim.logger.components.generation import Generation, GenerationConfig
-from maxim.logger.components.span import Span, SpanConfig
-from maxim.logger.components.toolCall import ToolCall, ToolCallConfig
-from maxim.logger.components.trace import Trace
-
-logging.getLogger("maxim").setLevel(logging.ERROR)
-logging.getLogger("MaximSDK").setLevel(logging.ERROR)
-logging.getLogger("maxim-py").setLevel(logging.ERROR)
-
-logging.getLogger("httpx").setLevel(logging.ERROR)
-logging.basicConfig(level=logging.ERROR)
 
 dotenv.load_dotenv()
 
@@ -276,9 +265,11 @@ async def chat():
         response = await ask_agent(initial_state, query)
         current_trace().set_input(query)
         current_trace().set_output(str(response))
-        current_trace().with_evaluators("Bias", "Output Relevance").with_variables(
-            {"input": query, "output": response}
+
+        current_trace().with_evaluators("Bias", "Output Relevance","isMoviePresent").with_variables(
+            {"input": query, "output": response,"movieName":"premer kahini"}
         )
+        
         return jsonify({"result": response})
     except Exception as e:
         logging.error(f"Chat endpoint error: {e}")
