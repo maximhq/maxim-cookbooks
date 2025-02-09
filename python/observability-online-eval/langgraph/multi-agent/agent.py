@@ -1,66 +1,78 @@
 import os
-from dotenv import load_dotenv
-load_dotenv()
-
-from maxim import Config, Maxim
-from maxim.decorators import current_trace, span, trace, current_span
-from maxim.logger.components.span import Span, SpanConfig
-from maxim.logger.components.trace import Trace
-from maxim.logger.components.toolCall import ToolCallConfig, ToolCall
-from maxim.logger.components.generation import Generation,GenerationConfig
-from maxim.decorators.langchain import langchain_callback, langgraph_agent
-from maxim.logger import LoggerConfig
-from langchain.tools import tool
-from pydantic import BaseModel
-from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from typing import List
-from langchain_core.documents import Document
-import os
-from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_openai import ChatOpenAI
-from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-import subprocess
-from langchain_community.utilities import SQLDatabase
-from langchain.chains import create_sql_query_chain
-from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
-from operator import itemgetter
 import re
+import subprocess
+from operator import itemgetter
+from typing import (
+    Callable,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
+
+from dotenv.main import load_dotenv
+from flask import Flask, jsonify, request
+from IPython.display import Image, display
+from langchain.chains import create_sql_query_chain
+from langchain.tools import tool
+from langchain_chroma import Chroma
+from langchain_community.document_loaders import Docx2txtLoader, PyPDFLoader
+from langchain_community.embeddings.sentence_transformer import (
+    SentenceTransformerEmbeddings,
+)
+from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.utilities import SQLDatabase
+from langchain_core.documents import Document
+from langchain_core.language_models import BaseChatModel, LanguageModelLike
+from langchain_core.messages import (
+    AIMessage,
+    BaseMessage,
+    HumanMessage,
+    SystemMessage,
+    ToolMessage,
+)
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
-from langchain_core.runnables import RunnablePassthrough, RunnableLambda
-from typing import Literal
-from typing_extensions import TypedDict
-from langgraph.graph import MessagesState, START, END
-from langgraph.types import Command
-import re
-from langchain_core.messages import HumanMessage, AIMessage
-from langgraph.graph import StateGraph, START, END
-from langgraph.prebuilt import create_react_agent
-
-from typing import Callable, Literal, Optional, Sequence, Type, TypeVar, Union, cast
-from langchain_core.language_models import BaseChatModel, LanguageModelLike
-from langchain_core.messages import AIMessage, BaseMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import (
     Runnable,
     RunnableBinding,
     RunnableConfig,
+    RunnableLambda,
+    RunnablePassthrough,
 )
-from langchain_chroma import Chroma
-from typing_extensions import Annotated, TypedDict
+from langchain_openai import ChatOpenAI
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph._api.deprecation import deprecated_parameter
 from langgraph.errors import ErrorCode, create_error_message
-from langgraph.graph import StateGraph
+from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.graph.graph import CompiledGraph
 from langgraph.graph.message import add_messages
 from langgraph.managed import IsLastStep, RemainingSteps
+from langgraph.prebuilt import create_react_agent
 from langgraph.prebuilt.tool_executor import ToolExecutor
 from langgraph.prebuilt.tool_node import ToolNode, tools_condition
 from langgraph.store.base import BaseStore
-from langgraph.types import Checkpointer
+from langgraph.types import Checkpointer, Command
 from langgraph.utils.runnable import RunnableCallable
-from IPython.display import Image, display
-from flask import Flask, jsonify, request
+from maxim import Config, Maxim
+from maxim.decorators import current_span, current_trace, span, trace
+from maxim.decorators.langchain import langchain_callback, langgraph_agent
+from maxim.logger import LoggerConfig
+from maxim.logger.components.generation import Generation, GenerationConfig
+from maxim.logger.components.span import Span, SpanConfig
+from maxim.logger.components.toolCall import ToolCall, ToolCallConfig
+from maxim.logger.components.trace import Trace
+from mock_tracer import MockTracer
+from pydantic import BaseModel
+from typing_extensions import Annotated, TypedDict
+
+load_dotenv()
+
 
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = os.environ.get("LANGCHAIN_API_KEY", "")
@@ -72,85 +84,96 @@ os.environ["TAVILY_API_KEY"] = os.environ.get("TAVILY_API_KEY", "")
 maxim_api_key = os.environ.get("MAXIM_API_KEY", "")
 maxim_base_url = os.environ.get("MAXIM_BASE_URL", "")
 maxim_repo_id = os.environ.get("MAXIM_LOG_REPO_ID", "")
-logger = Maxim(Config(api_key=maxim_api_key, debug=True, base_url=maxim_base_url)).logger(
-    LoggerConfig(id=maxim_repo_id)
-)
+logger = Maxim(
+    Config(api_key=maxim_api_key, debug=True, base_url=maxim_base_url)
+).logger(LoggerConfig(id=maxim_repo_id))
 
 llm = ChatOpenAI(model_name="gpt-4o")
 
 web_search_tool = TavilySearchResults(max_results=2)
 
+
 def load_documents(folder_path: str) -> List[Document]:
     documents = []
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
-        if filename.endswith('.pdf'):
+        if filename.endswith(".pdf"):
             loader = PyPDFLoader(file_path)
-        elif filename.endswith('.docx'):
+        elif filename.endswith(".docx"):
             loader = Docx2txtLoader(file_path)
         else:
-            print(f"Unsupported file type: {filename}")
+            # print(f"Unsupported file type: {filename}")
+            
             continue
         documents.extend(loader.load())
     return documents
 
-def vector_store()->Chroma:
+
+def vector_store() -> Chroma:
     embedding_function = SentenceTransformerEmbeddings(model_name="all-MiniLM-L6-v2")
-    
+
     # Check if the database already exists
     if os.path.exists("./chroma_db"):
-        print("Loading existing vector store from './chroma_db'")
+        # print("Loading existing vector store from './chroma_db'")
         vectorstore = Chroma(
             collection_name="my_collection",
             embedding_function=embedding_function,
-            persist_directory="./chroma_db"
+            persist_directory="./chroma_db",
         )
     else:
-        print("Creating new vector store...")
-        folder_path = "./content/docs"
+        # print("Creating new vector store...")
+        folder_path = os.path.join(os.path.dirname(__file__), "content", "docs")
         documents = load_documents(folder_path)
-        print(f"Loaded {len(documents)} documents from the folder.")
+        # print(f"Loaded {len(documents)} documents from the folder.")
 
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=200,
-            length_function=len
+            chunk_size=1000, chunk_overlap=200, length_function=len
         )
 
         splits = text_splitter.split_documents(documents)
-        print(f"Split the documents into {len(splits)} chunks.")
+        # print(f"Split the documents into {len(splits)} chunks.")
 
         vectorstore = Chroma.from_documents(
             collection_name="my_collection",
             documents=splits,
             embedding=embedding_function,
-            persist_directory="./chroma_db"
+            persist_directory="./chroma_db",
         )
-        print("Vector store created and persisted to './chroma_db'")
-    
+        # print("Vector store created and persisted to './chroma_db'")
+
     return vectorstore
+
 
 vectorstore = vector_store()
 
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
+
 class RagToolSchema(BaseModel):
     question: str
 
+
 @tool(args_schema=RagToolSchema)
 def retriever_tool(question):
-  """Tool to Retrieve Semantically Similar documents to answer User Questions related to FutureSmart AI"""
-  print("INSIDE RETRIEVER NODE")
-  retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
-  retriever_result = retriever.invoke(question)
-  return "\n\n".join(doc.page_content for doc in retriever_results)
+    """Tool to Retrieve Semantically Similar documents to answer User Questions related to FutureSmart AI"""
+    # print("INSIDE RETRIEVER NODE")
+    retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
+    retriever_results = retriever.invoke(question)
+    return "\n\n".join(doc.page_content for doc in retriever_results)
+
 
 if not os.path.exists("Chinook.db"):
-    print("Downloading Chinook database...")
-    subprocess.run(["wget", "https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite"])
+    # print("Downloading Chinook database...")
+    subprocess.run(
+        [
+            "wget",
+            "https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite",
+        ]
+    )
     subprocess.run(["mv", "Chinook_Sqlite.sqlite", "Chinook.db"])
 else:
-    print("Chinook database already exists")
+    # print("Chinook database already exists")
+    pass
 
 
 db = SQLDatabase.from_uri("sqlite:///Chinook.db")
@@ -185,25 +208,41 @@ def clean_sql_query(text: str) -> str:
         text = sql_match.group(1)
 
     # Step 4: Remove backticks around identifiers
-    text = re.sub(r'`([^`]*)`', r'\1', text)
+    text = re.sub(r"`([^`]*)`", r"\1", text)
 
     # Step 5: Normalize whitespace
     # Replace multiple spaces with single space
-    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r"\s+", " ", text)
 
     # Step 6: Preserve newlines for main SQL keywords to maintain readability
-    keywords = ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY',
-               'LIMIT', 'JOIN', 'LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN',
-               'OUTER JOIN', 'UNION', 'VALUES', 'INSERT', 'UPDATE', 'DELETE']
+    keywords = [
+        "SELECT",
+        "FROM",
+        "WHERE",
+        "GROUP BY",
+        "HAVING",
+        "ORDER BY",
+        "LIMIT",
+        "JOIN",
+        "LEFT JOIN",
+        "RIGHT JOIN",
+        "INNER JOIN",
+        "OUTER JOIN",
+        "UNION",
+        "VALUES",
+        "INSERT",
+        "UPDATE",
+        "DELETE",
+    ]
 
     # Case-insensitive replacement for keywords
-    pattern = '|'.join(r'\b{}\b'.format(k) for k in keywords)
-    text = re.sub(f'({pattern})', r'\n\1', text, flags=re.IGNORECASE)
+    pattern = "|".join(r"\b{}\b".format(k) for k in keywords)
+    text = re.sub(f"({pattern})", r"\n\1", text, flags=re.IGNORECASE)
 
     # Step 7: Final cleanup
     # Remove leading/trailing whitespace and extra newlines
     text = text.strip()
-    text = re.sub(r'\n\s*\n', '\n', text)
+    text = re.sub(r"\n\s*\n", "\n", text)
 
     return text
 
@@ -211,22 +250,20 @@ def clean_sql_query(text: str) -> str:
 class SQLToolSchema(BaseModel):
     question: str
 
+
 @tool(args_schema=SQLToolSchema)
 def nl2sql_tool(question):
-  """Tool to Generate and Execute SQL Query to answer User Questions related to chinook DB"""
-  print("INSIDE NL2SQL TOOL")
-  execute_query = QuerySQLDataBaseTool(db=db)
-  write_query = create_sql_query_chain(llm, db)
+    """Tool to Generate and Execute SQL Query to answer User Questions related to chinook DB"""
+    # print("INSIDE NL2SQL TOOL")
+    execute_query = QuerySQLDataBaseTool(db=db)
+    write_query = create_sql_query_chain(llm, db)
 
-  chain = (
-      RunnablePassthrough.assign(query=write_query | RunnableLambda(clean_sql_query)).assign(
-          result=itemgetter("query") | execute_query
-      )
-  )
+    chain = RunnablePassthrough.assign(
+        query=write_query | RunnableLambda(clean_sql_query)
+    ).assign(result=itemgetter("query") | execute_query)
 
-  response = chain.invoke({"question": question})
-  return response['result']
-
+    response = chain.invoke({"question": question})
+    return response["result"]
 
 
 members = ["web_researcher", "rag", "nl2sql"]
@@ -246,16 +283,18 @@ system_prompt = (
 class Router(TypedDict):
     """Worker to route to next. If no workers needed, route to FINISH."""
 
-    next: Literal["web_researcher", "rag", "nl2sql","FINISH"]
+    next: Literal["web_researcher", "rag", "nl2sql", "FINISH"]
 
 
-def supervisor_node(state: MessagesState) -> Command[Literal["web_researcher", "rag", "nl2sql", "__end__"]]:
+def supervisor_node(
+    state: MessagesState,
+) -> Command[Literal["web_researcher", "rag", "nl2sql", "__end__"]]:
     messages = [
         {"role": "system", "content": system_prompt},
     ] + state["messages"]
     response = llm.with_structured_output(Router).invoke(messages)
     goto = response["next"]
-    print(f"Next Worker: {goto}")
+    # print(f"Next Worker: {goto}")
     if goto == "FINISH":
         goto = END
 
@@ -267,10 +306,13 @@ class AgentState(TypedDict):
 
     messages: Annotated[Sequence[BaseMessage], add_messages]
 
+
 def create_agent(llm, tools):
     llm_with_tools = llm.bind_tools(tools)
+
     def chatbot(state: AgentState):
-      return {"messages": [llm_with_tools.invoke(state["messages"])]}
+        return {"messages": [llm_with_tools.invoke(state["messages"])]}
+
     graph_builder = StateGraph(AgentState)
     graph_builder.add_node("agent", chatbot)
 
@@ -287,6 +329,7 @@ def create_agent(llm, tools):
     graph = graph_builder.compile()
     return graph
 
+
 websearch_agent = create_agent(llm, [web_search_tool])
 
 # try:
@@ -294,12 +337,15 @@ websearch_agent = create_agent(llm, [web_search_tool])
 # except Exception:
 #     pass
 
+
 def web_research_node(state: MessagesState) -> Command[Literal["supervisor"]]:
     result = websearch_agent.invoke(state)
     return Command(
         update={
             "messages": [
-                HumanMessage(content=result["messages"][-1].content, name="web_researcher")
+                HumanMessage(
+                    content=result["messages"][-1].content, name="web_researcher"
+                )
             ]
         },
         goto="supervisor",
@@ -307,6 +353,7 @@ def web_research_node(state: MessagesState) -> Command[Literal["supervisor"]]:
 
 
 rag_agent = create_agent(llm, [retriever_tool])
+
 
 def rag_node(state: MessagesState) -> Command[Literal["supervisor"]]:
     result = rag_agent.invoke(state)
@@ -319,7 +366,9 @@ def rag_node(state: MessagesState) -> Command[Literal["supervisor"]]:
         goto="supervisor",
     )
 
+
 nl2sql_agent = create_agent(llm, [nl2sql_tool])
+
 
 def nl2sql_node(state: MessagesState) -> Command[Literal["supervisor"]]:
     result = nl2sql_agent.invoke(state)
@@ -332,6 +381,7 @@ def nl2sql_node(state: MessagesState) -> Command[Literal["supervisor"]]:
         goto="supervisor",
     )
 
+
 builder = StateGraph(MessagesState)
 builder.add_edge(START, "supervisor")
 builder.add_node("supervisor", supervisor_node)
@@ -340,28 +390,34 @@ builder.add_node("rag", rag_node)
 builder.add_node("nl2sql", nl2sql_node)
 graph = builder.compile()
 
+
 @langgraph_agent(name="multi-agent-work")
-def ask_agent(user_message:str):
+def ask_agent(user_message: str):
     config = {"callbacks": [langchain_callback()]}
-    for s in graph.stream(input={"messages": [("user", user_message)],}, config=config,subgraphs=True):
-        print(s)
-        print("----")
-
-
+    repsonse = ""
+    for s in graph.stream(
+        input={
+            "messages": [("user", user_message)],
+        },
+        config=config,
+        subgraphs=True,
+    ):
+        response = str(s)
+    return response
 
 flask_app = Flask(__name__)
+
 
 @flask_app.post("/chat")
 @trace(logger=logger, name="movie-search-v1")
 def chat():
     query = request.json["query"]
     response = ask_agent(query)
+    current_trace().set_output(response)
     return jsonify({"result": response})
+
 
 flask_app.run(port=8000)
 
 # from langfuse.callback import CallbackHandler
 # langfuse_handler = CallbackHandler()
-
-
-
