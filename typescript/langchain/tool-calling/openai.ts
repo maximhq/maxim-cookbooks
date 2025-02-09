@@ -3,6 +3,7 @@ import { z } from "zod";
 import { ChatOpenAI } from "@langchain/openai";
 import { Maxim } from "@maximai/maxim-js";
 import { MaximLangchainTracer } from "@maximai/maxim-js-langchain";
+import { HumanMessage } from "@langchain/core/messages";
 
 import "dotenv/config";
 
@@ -16,18 +17,18 @@ async function main() {
     });
     const logger = await maxim.logger({ id: repoId });
 
+    if (!logger) {
+        throw new Error("Failed to create logger");
+    }
+
     const maximTracer = new MaximLangchainTracer(logger);
 
     // initialize llm
     const llm = new ChatOpenAI({
         openAIApiKey: process.env.OPENAI_API_KEY,
-        modelName: "gpt-4o-mini",
+        model: "gpt-4o-mini",
         temperature: 0,
-        topP: 1,
-        frequencyPenalty: 0,
         callbacks: [maximTracer],
-        maxTokens: 4096,
-        n: 1,
         metadata: {
             maxim: { generationName: "gen1", generationTags: { test: "test openai tool" } },
         },
@@ -66,8 +67,22 @@ async function main() {
 
     const llmWithTools = llm.bindTools([calculatorTool]);
 
-    await llmWithTools.invoke("Hi OpenAI, What is 3 * 12?");
+    const messages = [new HumanMessage("Hi OpenAI, What is 3 * 12?")];
 
+    const aiMessage = await llmWithTools.invoke(messages);
+
+    messages.push(aiMessage);
+
+    if (aiMessage.tool_calls) {
+        for (const toolCall of aiMessage.tool_calls) {
+            const toolMessage = await calculatorTool.invoke(toolCall);
+            messages.push(toolMessage);
+        }
+    }
+
+    const finalMessage = await llmWithTools.invoke(messages);
+
+    console.log("final message", finalMessage.content);
     await maxim.cleanup();
 }
 

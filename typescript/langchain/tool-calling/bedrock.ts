@@ -14,6 +14,11 @@ async function main() {
         apiKey: process.env.MAXIM_API_KEY!,
     });
     const logger = await maxim.logger({ id: repoId });
+
+    if (!logger) {
+        throw new Error("Failed to create logger");
+    }
+
     const query = "Hi Bedrock, what is 3 + 5?";
     const maximTracer = new MaximLangchainTracer(logger);
 

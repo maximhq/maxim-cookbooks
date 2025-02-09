@@ -1,17 +1,20 @@
 {
-  "name": "openai-chat-completion",
+  "name": "customer-support",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "keywords": [],
   "license": "ISC",
-  "description": "",
   "dependencies": {
+    "@langchain/community": "^0.3.28",
+    "@langchain/core": "^0.3.37",
+    "@langchain/langgraph": "^0.2.44",
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
     "dotenv": "^16.4.7",
-    "langchain": "^0.3.9"
+    "zod": "^3.24.1",
+    "zod-to-json-schema": "^3.24.1"
   }
 }

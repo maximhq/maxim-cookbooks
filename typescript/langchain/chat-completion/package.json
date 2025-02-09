@@ -13,8 +13,8 @@
     "@langchain/aws": "^0.1.3",
     "@langchain/core": "^0.3.27",
     "@langchain/openai": "^0.3.16",
-    "@maximai/maxim-js-langchain": "0.2.4",
-    "@maximai/maxim-js": "^6.0.2",
+    "@maximai/maxim-js": "^6.1.2",
+    "@maximai/maxim-js-langchain": "^1.0.0",
     "dotenv": "^16.4.7",
     "langchain": "^0.3.9"
   },
