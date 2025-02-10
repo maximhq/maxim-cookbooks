@@ -5,14 +5,17 @@ from maxim.maxim import Logger, LoggerConfig
 from maxim.logger.components.session import SessionConfig
 from maxim.logger.components.trace import TraceConfig
 
+
 # Retrieve API keys from environment variables
 MAXIM_API_KEY = os.getenv("MAXIM_API_KEY")
-LOG_REPOSITORY_ID =  os.getenv("LOG_REPOSITORY_ID")# ENTER YOUR OWN LOG REPOSITORY
+LOG_REPOSITORY_ID = os.getenv("LOG_REPOSITORY_ID")  # ENTER YOUR OWN LOG REPOSITORY
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 # Set up Maxim logger configuration
 logger_config = LoggerConfig(id=LOG_REPOSITORY_ID)
-logger = Logger(config=logger_config, api_key=MAXIM_API_KEY, base_url="https://app.getmaxim.ai")
+logger = Logger(
+    config=logger_config, api_key=MAXIM_API_KEY, base_url="https://app.getmaxim.ai"
+)
 
 # Set up a unique session and trace for the application
 session_id = str(uuid4())
@@ -40,41 +43,40 @@ generation_config = GenerationConfig(
     model=MODEL_NAME,
     messages=[
         {"role": "system", "content": system_message},
-        {"role": "user", "content": user_input}
-    ]
+        {"role": "user", "content": user_input},
+    ],
 )
 generation = trace.generation(generation_config)
 
 try:
     # Make the API call to Claude using LangChain
-    messages = [
-        ("system", system_message),
-        ("human", user_input)
-    ]
+    messages = [("system", system_message), ("human", user_input)]
     response = llm.invoke(messages)
     response_text = response.content
 
     # Log the response with Maxim
-    generation.result({
-        "id": generation_id,
-        "object": "text_completion",
-        "created": int(time()),
-        "model": generation_config.model,
-        "choices": [
-            {
-                "index": 0,
-                "text": response_text,
-                "logprobs": None,
-                "finish_reason": "stop",
+    generation.result(
+        {
+            "id": generation_id,
+            "object": "text_completion",
+            "created": int(time()),
+            "model": generation_config.model,
+            "choices": [
+                {
+                    "index": 0,
+                    "text": response_text,
+                    "logprobs": None,
+                    "finish_reason": "stop",
+                },
+            ],
+            "usage": {
+                "prompt_tokens": 0,  # LangChain might not provide token counts
+                "completion_tokens": 0,
+                "total_tokens": 0,
             },
-        ],
-        "usage": {
-            "prompt_tokens": 0,  # LangChain might not provide token counts
-            "completion_tokens": 0,
-            "total_tokens": 0,
-        },
-    })
-    
+        }
+    )
+
     # Print the response
     print(response_text)
 
