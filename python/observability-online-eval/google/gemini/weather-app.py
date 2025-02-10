@@ -1,9 +1,11 @@
 import os
+from uuid import uuid4
 import dotenv
 from flask import Flask, request
 from flask.json import jsonify
 from google import genai
 from maxim import Maxim, Config, LoggerConfig
+from maxim.logger import TraceConfig
 from maxim.logger.gemini import MaximGeminiClient
 
 dotenv.load_dotenv()
@@ -33,8 +35,52 @@ def get_current_weather(location: str) -> str:
     return "23C"
 
 
+@app.post("/ask2")
+def ask_weather_second():
+    """
+    Process a weather-related query using Gemini 2.0 Flash model.
+
+    Endpoint expects a POST request with JSON body containing a 'query' field.
+    Creates a trace for logging and passes the query to Gemini model with weather tools.
+
+    Here we pass external trace to log this generation
+
+    Returns:
+        JSON containing 'data' field with generated response text
+        400 error if request/JSON is invalid
+    """
+    if request is None or request.json is None:
+        return jsonify({"data": "Invalid query"}), 400
+    trace = logger.trace(TraceConfig(id=str(uuid4())))
+    query = request.json["query"]
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=query,
+        config={
+            "tools": [get_current_weather],
+            "system_instruction": "You are a helpful assisatant",
+            "temperature": 0.8,
+        },
+        trace_id=trace.id,
+    )
+    trace.end()
+    return jsonify({"data": response.text})
+
+
 @app.post("/ask")
 def ask_weather():
+    """
+    Process a weather-related query using Gemini 2.0 Flash model.
+
+    Endpoint expects a POST request with JSON body containing a 'query' field.
+    Creates a trace for logging and passes the query to Gemini model with weather tools.
+
+    Here we ask MaximGeminiClient to create the trace
+
+    Returns:
+        JSON containing 'data' field with generated response text
+        400 error if request/JSON is invalid
+    """
     if request is None or request.json is None:
         return jsonify({"data": "Invalid query"}), 400
     query = request.json["query"]
