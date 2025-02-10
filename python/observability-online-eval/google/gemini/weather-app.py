@@ -3,11 +3,23 @@ import dotenv
 from flask import Flask, request
 from flask.json import jsonify
 from google import genai
+from maxim import Maxim, Config, LoggerConfig
+from maxim.logger.gemini import MaximGeminiClient
 
 dotenv.load_dotenv()
 
+maxim_api_key = os.getenv("MAXIM_API_KEY")
+maxim_repo_id = os.getenv("MAXIM_REPO_ID")
+if maxim_api_key is None or maxim_repo_id is None:
+    raise ValueError("Please configure Maxim API key and repo id")
+
+logger = Maxim(Config(api_key=maxim_api_key)).logger(LoggerConfig(id=maxim_repo_id))
+
+
 app = Flask(__name__)
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+client = MaximGeminiClient(
+    client=genai.Client(api_key=os.getenv("GEMINI_API_KEY")), logger=logger
+)
 
 
 def get_current_weather(location: str) -> str:

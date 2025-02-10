@@ -16,3 +16,5 @@ launch.json
 .vscode
 .vscode/launch.json
 .venv
+
+*.egg-info
