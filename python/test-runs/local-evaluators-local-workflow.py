@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict
 from dotenv import dotenv_values
 from maxim import Config, Maxim
 from maxim.evaluators import BaseEvaluator
@@ -7,6 +7,7 @@ from maxim.models import (
     LocalEvaluatorReturn,
     ManualData,
     PassFailCriteria,
+    YieldedOutput
 )
 from maxim.models.evaluator import (
     PassFailCriteriaForTestrunOverall,
@@ -29,6 +30,18 @@ maxim = Maxim(
     )
 )
 
+def run(data: ManualData):
+    """
+    This will contain you local workflow.
+    For this cookbook, we are sending hardcoded test as output
+    YieldedOutput type also supports metadata like
+        - meta
+            - cost
+            - token usage etc.
+    You can also pass context as retrieved_context_to_evaluate
+    """
+    print(f"processing => {data.get("Input")}")
+    return YieldedOutput(data="test")
 
 class MyCustomEvaluator(BaseEvaluator):
     """
@@ -52,9 +65,9 @@ class MyCustomEvaluator(BaseEvaluator):
         }
 
 
-maxim.create_test_run(
-    name="Local evaluators from SDK", in_workspace_id=WORKSPACE_ID
-).with_data(DATASET_ID).with_concurrency(2).with_evaluators(
+maxim.create_test_run(name="Local workflow test run from SDK", in_workspace_id=WORKSPACE_ID).with_data(
+    DATASET_ID
+).with_concurrency(2).with_evaluators(
     "Bias",
     MyCustomEvaluator(
         pass_fail_criteria={
@@ -72,6 +85,4 @@ maxim.create_test_run(
             ),
         }
     ),
-).with_workflow_id(
-    WORKFLOW_ID
-).run()
+).yields_output(run).run()
