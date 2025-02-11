@@ -243,8 +243,6 @@ flask_app = Flask(__name__)
 
 eval_config = {
     "agent":['bias','output relevance'],
-    "retrieve":['bias','output relevance'],
-    "search":['bias','output relevance']
 }
 @langgraph_agent(name="movie-agent-v1",eval_config=eval_config)
 async def ask_agent(initial_state: dict, query: str) -> str:
