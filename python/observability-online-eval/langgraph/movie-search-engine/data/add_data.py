@@ -16,6 +16,7 @@ openai_key = os.environ.get("OPENAI_API_KEY", "")
 weaviate_url = os.environ.get("WEAVIATE_URL", "")
 weaviate_key = os.environ.get("WEAVIATE_API_KEY", "")
 
+print(weaviate_url)
 
 # Setting up client
 client = weaviate.connect_to_weaviate_cloud(

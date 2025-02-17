@@ -241,8 +241,10 @@ app = workflow.compile()
 # Flask application
 flask_app = Flask(__name__)
 
-
-@langgraph_agent(name="movie-agent-v1")
+eval_config = {
+    "agent":['bias','output relevance'],
+}
+@langgraph_agent(name="movie-agent-v1",eval_config=eval_config)
 async def ask_agent(initial_state: dict, query: str) -> str:
     config = {"callbacks": [langchain_callback()]}
     response = None
@@ -265,10 +267,6 @@ async def chat():
         response = await ask_agent(initial_state, query)
         current_trace().set_input(query)
         current_trace().set_output(str(response))
-
-        current_trace().with_evaluators("Bias", "Output Relevance","isMoviePresent").with_variables(
-            {"input": query, "output": response,"movieName":"premer kahini"}
-        )
         
         return jsonify({"result": response})
     except Exception as e:
