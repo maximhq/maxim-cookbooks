@@ -1,0 +1,33 @@
+name: Run Maxim Tests on HR IT Rag
+
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Install jq
+        run: sudo apt-get install -y jq
+      - name: Running Test Run
+        id: test_run
+        uses: maximhq/actions/test-runs@v1
+        with:
+          api_key: ${{ secrets.MAXIM_API_KEY }}
+          workspace_id: cln4nw1n80000mc3wqqwk4j0z
+          test_run_name: "Sanity test ${{github.sha}}"
+          dataset_id: "cm48a9q4j005z4j9cfna8i8b1"
+          workflow_id: "cly4q6bp4005u6pjrw66zalj2"
+          evaluators: "bias, toxicity"
+          human_evaluation_emails: "akshay@getmaxim.ai"
+          human_evaluation_instructions: "Evaluate the pre merge test run results and approve the deployment on GitHub."
+      - name: Display Test Run Outputs
+        if: success()
+        run: |
+          echo 'Test Run Report URL: ${{ steps.test_run.outputs.test_run_report_url }}'
