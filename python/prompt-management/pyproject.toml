@@ -1,0 +1,11 @@
+[project]
+name = "maxim-prompt-management"
+version = "0.1.0"
+requires-python = ">=3.9"
+description = "Maxim AI cookbook for gemini."
+authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
+dependencies = [
+    "fastapi>=0.115.8",
+ "python-dotenv>=1.0.1",
+ "maxim-py==3.4.2",
+]
