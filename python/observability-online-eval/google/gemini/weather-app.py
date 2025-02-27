@@ -17,7 +17,6 @@ if maxim_api_key is None or maxim_repo_id is None:
 
 logger = Maxim(Config(api_key=maxim_api_key)).logger(LoggerConfig(id=maxim_repo_id))
 
-
 app = Flask(__name__)
 client = MaximGeminiClient(
     client=genai.Client(api_key=os.getenv("GEMINI_API_KEY")), logger=logger
