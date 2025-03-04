@@ -26,7 +26,7 @@ A multi-turn conversation involves ongoing interactions between a customer and a
 ## The Customer Support Agent
 
 This example demonstrates a streamlined implementation of a customer support agent using a Flask application. 
-You can find the complete code in the Maxim Cookbooks [here](https://github.com/maximhq/maxim-cookbooks/tree/main/python).
+You can find the complete code in the Maxim Cookbooks [here](https://github.com/maximhq/maxim-cookbooks/blob/main/python/observability-online-eval/customer-support-agent/tracing-eval.ipynb).
 
 #### System Overview
 The customer support agent given in this example is a modular system that seamlessly integrates language models, knowledge bases, retrieval mechanisms, and a suite of advanced tools.
