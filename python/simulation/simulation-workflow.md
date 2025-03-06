@@ -7,13 +7,13 @@
 1. [Introduction](#introduction)
 2. [The Agent](#the-customer-support-agent)
 3. [Setting up the Simulation](#setting-up-the-simulation)
-4. [Choosing Metrics](#choosing-metrics)
-5. [Non-context Examples](#non-context-examples)
+4. [Non-context Examples](#examples)
+5. [Choosing Metrics](#choosing-metrics)
 
 ##### Optimizations
 
 6. [Providing Context](#providing-context)
-7. [Context Examples](#context-examples)
+7. [Context Examples](#examples-1)
 8. [Debugging Using Logs](#debugging-using-logs)
 
 ---
