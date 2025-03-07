@@ -79,6 +79,14 @@ try:
         },
     })
 
+    # Print the response
+    print("OpenAI's Response:")
+    print(response_text)
+    print("\nToken Usage:")
+    print(f"Prompt tokens: {usage.prompt_tokens}")
+    print(f"Completion tokens: {usage.completion_tokens}")
+    print(f"Total tokens: {usage.total_tokens}")
+
     generation.end()
 
 finally:
