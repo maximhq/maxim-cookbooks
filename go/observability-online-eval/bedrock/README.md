@@ -1,10 +1,10 @@
-# Maxim-Go Cookbook
+# Maxim-Go Bedrock Cookbook
 
 This folder contains examples of how to use the [maxim-go](https://github.com/maximhq/maxim-go) SDK to monitor and trace your AI applications using Bedrock.
 
 ## Getting Started
 
-To run the examples, you'll need to set your OpenAI API key:
+To run the examples, you'll need to set your Berdock API key:
 
 ```bash
 export MAXIM_API_KEY=

@@ -1,10 +1,10 @@
-# Maxim-Go OpenAI Cookbook
+# Maxim-Go Azure Cookbook
 
 This folder contains examples of how to use the [maxim-go](https://github.com/maximhq/maxim-go) SDK to monitor and trace your AI applications using Azure OpenAI SDK.
 
 ## Getting Started
 
-To run the examples, you'll need to set your OpenAI API key:
+To run the examples, you'll need to set your Azure API key:
 
 ```bash
 export AZURE_OPENAI_API_KEY=
