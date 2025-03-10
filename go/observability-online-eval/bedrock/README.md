@@ -51,7 +51,7 @@ trace := logger.Trace(&logging.TraceConfig{
 defer trace.End()
 ```
 
-### Using MaximBedrockHTTPClient (One line ingegrate)
+### Using MaximBedrockHTTPClient (One line integrate)
 
 ```go
 import (
