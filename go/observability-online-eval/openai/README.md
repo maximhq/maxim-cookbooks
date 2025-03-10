@@ -36,7 +36,7 @@ if err != nil {
 
 ### Manual Tracing
 
-In `openai/manual.go`, you'll find an example of how to manually create and manage traces in Maxim. This approach gives you complete control over the tracing process.
+In `manual.go`, you'll find an example of how to manually create and manage traces in Maxim. This approach gives you complete control over the tracing process.
 
 ```go
 traceId := uuid.New().String()
@@ -50,7 +50,7 @@ defer trace.End()
 
 ### Using Middleware (Easy to integrate)
 
-The `openai/usingMiddleware.go` example shows how to set up integration with middleware.
+The `usingMiddleware.go` example shows how to set up integration with middleware.
 
 For this, you just have to pass MaximOpenAIMiddleware while creating the OpenAI client.
 
