@@ -63,16 +63,16 @@ import (
 )
 
 cfg, err := config.LoadDefaultConfig(context.Background(),
-		config.WithRegion(awsRegion),
-		config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
-			awsAccessKey, // AWS Access Key
-			awsSecretKey, // AWS Secret Key
-			"",           // Session token (optional)
-		)),
-		// Add MaximBedrockHTTPClient
-		config.WithHTTPClient(middlewares.NewMaximBedrockHTTPClient(logger)),
-		// And you are done
-	)
+config.WithRegion(awsRegion),
+config.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
+	awsAccessKey, // AWS Access Key
+	awsSecretKey, // AWS Secret Key
+	"",           // Session token (optional)
+)),
+// Add MaximBedrockHTTPClient
+config.WithHTTPClient(middlewares.NewMaximBedrockHTTPClient(logger)),
+// And you are done
+)
 ```
 
 If you want to track other services, you can create trace outside. And pass into the context you are using for calling converse.
@@ -89,13 +89,13 @@ defer trace.End()
 ctx := context.WithValue(context.Background(), "maxim.traceId", traceId)
 
 // Call converse
-output, err := brc.Converse(ctx, &bedrockruntime.ConverseInput{
+output, err := brc.Converse(ctx, &bedrockruntime.ConverseInput {
 		ModelId:  aws.String(ClaudeModeId),
 		System:   systemMessage,
 		Messages: messages,
 		InferenceConfig: &types.InferenceConfiguration{
 			Temperature: aws.Float32(0.2),
-		},...
+	},...
 ```
 
 This will attach LLM call made with converse to trace with ID `traceId`.
