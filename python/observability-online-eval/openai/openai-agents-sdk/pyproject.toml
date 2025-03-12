@@ -9,4 +9,5 @@ dependencies = [
  "maxim-py==3.4.5",
  "openai-agents>=0.0.3",
  "openai>=1.66.2",
+ "pydantic>=2.10.6",
 ]
