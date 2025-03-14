@@ -6,7 +6,7 @@ description = "Maxim AI cookbook for tracing openai-agents."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
  "python-dotenv>=1.0.1",
- "maxim-py==3.4.5",
+ "maxim-py==3.4.6",
  "openai-agents>=0.0.3",
  "openai>=1.66.2",
  "pydantic>=2.10.6",
