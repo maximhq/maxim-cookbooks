@@ -16,7 +16,6 @@ from maxim.logger.langchain import MaximLangchainTracer
 
 load_dotenv()
 
-
 maxim_api_key = os.environ.get("MAXIM_API_KEY", "")
 maxim_base_url = os.environ.get("MAXIM_BASE_URL", "")
 maxim_repo_id = os.environ.get("MAXIM_LOG_REPO_ID", "")

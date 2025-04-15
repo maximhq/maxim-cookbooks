@@ -1,0 +1,13 @@
+[project]
+name = "maxim-bedrock-logging"
+version = "0.1.0"
+requires-python = ">=3.9"
+description = "Maxim AI cookbook for tracing bedrock inference call."
+authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
+dependencies = [
+ "python-dotenv>=1.0.1",
+ "pydantic>=2.10.6",
+ "ipykernel>=6.29.5",
+ "aioboto3>=14.1.0",
+ "maxim-py===3.4.12",
+]
