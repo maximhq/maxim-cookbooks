@@ -8,6 +8,5 @@ dependencies = [
  "python-dotenv>=1.0.1",
  "pydantic>=2.10.6",
  "ipykernel>=6.29.5",
- "aioboto3>=14.1.0",
- "maxim-py===3.4.12",
+ "aioboto3>=14.1.0"
 ]
