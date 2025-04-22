@@ -1,63 +1,51 @@
-import { cn } from '@/lib/utils'
 import { RealtimeEvent } from './RealtimeConsole'
 
 interface EventLogProps {
   events: RealtimeEvent[]
 }
 
-function WaveAnimation() {
-  return (
-    <div className="flex gap-1 h-4 items-end">
-      {[...Array(3)].map((_, i) => (
-        <div
-          key={i}
-          className="w-1 bg-primary animate-wave"
-          style={{
-            height: '30%',
-            animationDelay: `${i * 0.15}s`
-          }}
-        />
-      ))}
-    </div>
-  )
+function getEventColor(type: string): string {
+  switch (type) {
+    case 'error':
+      return 'text-red-500'
+    case 'response.created':
+    case 'response.update':
+    case 'response.end':
+      return 'text-blue-500'
+    case 'conversation.item.created':
+      return 'text-green-500'
+    case 'audio.start':
+    case 'audio.stop':
+      return 'text-yellow-500'
+    default:
+      return 'text-gray-400'
+  }
 }
 
 export function EventLog({ events }: EventLogProps) {
   return (
-    <div className="space-y-4">
-      {events.map((event) => (
-        <div
-          key={event.event_id}
-          className={cn(
-            "p-4 rounded-lg border border-border",
-            event.isProcessing ? "bg-muted" : "bg-card"
-          )}
+    <div className="space-y-2 font-mono">
+      {events.map((event, index) => (
+        <div 
+          key={event.event_id || index}
+          className="flex items-start gap-2 font-[var(--font-ibm-plex-mono)]"
         >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-muted-foreground">
-              {event.timestamp}
-            </span>
-            <span className="text-sm font-mono text-muted-foreground">
-              {event.type}
-            </span>
-          </div>
-          
+          <span className="text-gray-400 min-w-[90px] text-sm">
+            {event.timestamp}
+          </span>
+          <span className={`${getEventColor(event.type)} text-sm`}>
+            {event.type}
+          </span>
           {event.item && (
-            <div className="mt-2">
-              <div className="text-sm font-medium">
-                {event.item.role === 'user' ? 'User' : 'Assistant'}
-              </div>
+            <div className="text-sm text-gray-300 break-all">
+              {event.item.role === 'user' ? (
+                <span className="text-purple-400">User: </span>
+              ) : event.item.role === 'assistant' ? (
+                <span className="text-green-400">Assistant: </span>
+              ) : null}
               {event.item.content.map((content, i) => (
-                <div key={i} className="mt-1 text-sm">
-                  {content.text}
-                </div>
+                <span key={i}>{content.text}</span>
               ))}
-            </div>
-          )}
-          
-          {event.isProcessing && (
-            <div className="mt-2">
-              <WaveAnimation />
             </div>
           )}
         </div>
