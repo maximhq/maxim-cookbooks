@@ -10,7 +10,7 @@ export async function GET() {
   try {
     // Create an ephemeral key that expires in 1 hour
     const response = await openai.beta.realtime.sessions.create({      
-      model: "gpt-4o-realtime-preview-2024-12-17",
+      model: "gpt-4o-realtime-preview",
       instructions: "You are a helpful voice assistant. Keep responses concise and conversational.",      
       voice: "verse",
     })
