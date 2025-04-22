@@ -2,6 +2,7 @@
     "editor.tabSize": 2,
     "cSpell.words": [
         "langgraph",
-        "WEAVIATE"
+        "WEAVIATE",
+        "webrtc"
     ]
 }
