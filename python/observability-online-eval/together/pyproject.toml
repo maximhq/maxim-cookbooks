@@ -1,0 +1,12 @@
+[project]
+name = "maxim-together-tracing"
+version = "0.1.0"
+requires-python = ">=3.9"
+description = "Maxim AI cookbook for tracing together provider."
+authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
+dependencies = [
+ "ipykernel>=6.29.5",
+ "pip>=25.0.1",
+ "python-dotenv>=1.0.1",
+ "together>=1.4.6",
+]

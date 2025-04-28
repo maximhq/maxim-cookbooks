@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev:relay\" \"npm run dev:app\"",
-    "dev:relay": "cd relay-server && npm run dev",
-    "dev:app": "next dev --turbopack",
+    "dev": "concurrently  \"npm run dev:app\" \"npm run dev:relay\"",
+    "dev:relay": "sleep 3 && cd relay-server && npm run dev",
+    "dev:app": "PORT=3002 next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
