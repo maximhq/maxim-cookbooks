@@ -1,0 +1,3 @@
+litellm[proxy]>=1.30.0
+python-dotenv>=0.21.1
+maxim-py==3.4.16
