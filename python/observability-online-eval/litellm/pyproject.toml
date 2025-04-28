@@ -6,6 +6,7 @@ description = "Maxim AI cookbook for tracing litellm."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
  "ipykernel>=6.29.5",
+ "litellm>=1.67.4.post1",
  "maxim-py==3.4.13",
  "pip>=25.0.1",
  "python-dotenv>=1.0.1",
