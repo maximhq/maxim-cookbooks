@@ -1,0 +1,16 @@
+services:
+  litellm-proxy:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./config.yml:/app/config.yml
+      - ./proxy_logs.log:/app/proxy_logs.log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped 
