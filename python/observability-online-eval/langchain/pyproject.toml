@@ -1,7 +1,7 @@
 [project]
 name = "maxim-langchain-tracing"
 version = "0.1.0"
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.12"
 description = "Maxim AI cookbook for tracing lanchain."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
@@ -13,4 +13,5 @@ dependencies = [
  "together>=1.4.6",
  "langchain-openai>=0.3.14",
  "langchain-anthropic>=0.3.12",
+ "maxim-py==3.4.17",
 ]
