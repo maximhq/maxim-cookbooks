@@ -1,15 +1,16 @@
 import os
-import openai
 from time import time
-from maxim.maxim import Logger, LoggerConfig
+from uuid import uuid4
+
+import openai
+from maxim.logger.components.generation import GenerationConfig
 from maxim.logger.components.session import SessionConfig
 from maxim.logger.components.trace import TraceConfig
-from maxim.logger.components.generation import GenerationConfig
-from uuid import uuid4
+from maxim.maxim import Logger, LoggerConfig
 
 # Retrieve API keys from environment variables
 MAXIM_API_KEY = os.getenv("MAXIM_API_KEY")
-LOG_REPOSITORY_ID = os.getenv("LOG_REPOSITORY_ID")
+LOG_REPOSITORY_ID = os.getenv("MAXIM_LOG_REPO_ID")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Define the OpenAI model
