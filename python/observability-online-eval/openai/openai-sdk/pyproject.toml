@@ -9,6 +9,5 @@ dependencies = [
     "ipykernel>=6.29.5",
     "openai>=1.65.4",
     "openai-agents>=0.0.14",
-    "python-dotenv>=1.0.1",
-    "maxim-py==3.5.0"
+    "python-dotenv>=1.0.1",    
 ]
