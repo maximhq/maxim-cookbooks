@@ -1,0 +1,11 @@
+[project]
+name = "anthropic-maxim"
+version = "0.1.0"
+description = "Anthropic + Maxim SDK"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.50.0",
+    "ipykernel>=6.29.5",    
+    "python-dotenv>=1.1.0",
+]
