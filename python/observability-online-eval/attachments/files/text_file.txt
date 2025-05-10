@@ -1,0 +1,145 @@
+Order ID: a70fd934-600e-480d-923b-c451cfdb7e4c
+
+Customer ID: 8d001f9b-f6a5-4692-9136-2c6a67e6caac
+Order Date: 6/1/2025
+Total Price: $96.40
+Status: Cancelled
+Shipping Address: 5167 Barbara Bypass Apt. 740 Michaelton, TX 58260
+Billing Address: 9447 Chan Bridge Apt. 614 Vegahaven, TN 24740
+Tracking Number: DWh-414-KMa
+Estimated Delivery: 1/2/2025
+Return Eligibility: True
+Quantity: 4
+
+
+Order ID: 2a9e776c-dab9-4ef7-be3d-894ceadd5023
+
+Customer ID: 0a0f9e37-3408-4de7-812c-e233e8f25348
+Order Date: 5/1/2025
+Total Price: $35.30
+Status: Pending
+Shipping Address: 758 Campbell Tunnel Apt. 875 East Joshuaborough, VA 63691
+Billing Address: 20189 Taylor Prairie Apt. 190 Schmittside, MT 08603
+Tracking Number: XCE-188-PJK
+Estimated Delivery: 1/2/2025
+Return Eligibility: False
+Quantity: 4
+
+
+Order ID: 965e3c33-fb81-4272-9af4-34c2f64538b7
+
+Customer ID: 8d001f9b-f6a5-4692-9136-2c6a67e6caac
+Order Date: 4/1/2025
+Total Price: $79.20
+Status: Delivered
+Shipping Address: 32601 Brewer Cape East Alexis, ND 90433
+Billing Address: 4404 Miranda Plain Suite 784 North Roberto, AK 25934
+Tracking Number: clH-997-Qum
+Estimated Delivery: 1/2/2025
+Actual Delivery: 2/2/2025
+Return Eligibility: False
+Quantity: 3
+
+
+Order ID: 1e24f35f-31f4-480b-9cab-2cf54322ef74
+
+Customer ID: 0842a926-578c-417c-9177-4db9487a7628
+Order Date: 11/1/2025
+Total Price: $56.00
+Status: Returned
+Shipping Address: 036 Heidi Ford Ericton, DC 38784
+Billing Address: 032 Elizabeth Drive Velazquezshire, SD 02429
+Tracking Number: oLr-736-DfU
+Estimated Delivery: 2/2/2025
+Return Request Date: 1/2/2025
+Refund Amount: $91.20
+Return Eligibility: True
+Quantity: 1
+
+
+Order ID: 9119bf4d-2d23-4a4f-b721-327582dfb8a4
+
+Customer ID: f92bef64-b7fc-4677-83ff-4fd76d915ee7
+Order Date: 2/2/2025
+Total Price: $21.10
+Status: Shipped
+Shipping Address: 79757 Brandy Vista Suite 606 Pamelatown, WV 28030
+Billing Address: PSC 6605, Box 0122 APO AA 32812
+Tracking Number: pyl-275-zFU
+Estimated Delivery: 1/2/2025
+Return Eligibility: False
+Quantity: 5
+
+
+Order ID: 9857e452-3df2-44ae-9c52-25ccc802a87d
+
+Customer ID: 8c0d2832-69b4-4ca0-88ab-8ac7db410296
+Order Date: 31/1/2025
+Total Price: $89.10
+Status: Delivered
+Shipping Address: 3333 Sutton Lodge Craigview, KS 90146
+Billing Address: 79449 Owens Extensions Apt. 827 Johnport, NE 27423
+Tracking Number: CFN-283-KDf
+Estimated Delivery: 2/2/2025
+Actual Delivery: 1/2/2025
+Return Eligibility: False
+Quantity: 5
+
+
+Order ID: dc5ded8c-3f49-415e-9365-171bb16b1f41
+
+Customer ID: ba4711f5-68ab-4bb8-b8f2-1daedd2c20ca
+Order Date: 9/1/2025
+Total Price: $95.60
+Status: Pending
+Shipping Address: 6655 Melissa Street Chelseyhaven, FL 47861
+Billing Address: 031 Heath Springs Apt. 879 Gillfort, KY 01199
+Tracking Number: upj-716-Mxm
+Estimated Delivery: 1/2/2025
+Return Eligibility: True
+Quantity: 2
+
+
+Order ID: b0252d16-c122-4d96-a033-68f62bf5bb3a
+
+Customer ID: 53e53234-fb26-460a-b963-a2eb0a0463c1
+Order Date: 23/1/2025
+Total Price: $42.20
+Status: Delivered
+Shipping Address: 7520 Jessica Club Apt. 539 East Andrew, RI 80061
+Billing Address: 852 Michelle Drives Suite 564 South Kristine, CA 75088
+Tracking Number: jxS-958-zMJ
+Estimated Delivery: 1/2/2025
+Actual Delivery: 2/2/2025
+Return Eligibility: False
+Quantity: 3
+
+
+Order ID: 47627161-1caa-4e96-a9d3-6ad2fe8a5b28
+
+Customer ID: aa0dfbf8-1e96-4f74-9570-8fdd8f346cc2
+Order Date: 8/1/2025
+Total Price: $44.90
+Status: Returned
+Shipping Address: 6197 Davis Vista Hollyport, IL 52870
+Billing Address: Unit 2674 Box 0930 DPO AE 10227
+Tracking Number: MBw-613-dex
+Estimated Delivery: 1/2/2025
+Return Request Date: 1/2/2025
+Refund Amount: $19.90
+Return Eligibility: False
+Quantity: 2
+
+
+Order ID: 344b8a28-0cb1-4455-a2a3-fe2b6274c531
+
+Customer ID: 8d001f9b-f6a5-4692-9136-2c6a67e6caac
+Order Date: 13/1/2025
+Total Price: $79.00
+Status: Cancelled
+Shipping Address: 6943 Alicia Fork Michaelfurt, ID 01941
+Billing Address: 2643 Townsend Pass Suite 653 Teresabury, WA 85090
+Tracking Number: Elb-567-WEC
+Estimated Delivery: 2/2/2025
+Return Eligibility: True
+Quantity: 4
