@@ -737,7 +737,7 @@ requires-dist = [
     { name = "langchain-aws", specifier = "==0.1.18" },
     { name = "langchain-community", specifier = "==0.2.17" },
     { name = "langchain-openai", specifier = "==0.1.25" },
-    { name = "maxim-py", specifier = ">=3.6.2" },
+    { name = "maxim-py", specifier = "===3.6.3" },
     { name = "pip", specifier = ">=25.0.1" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "together", specifier = ">=1.4.6" },
@@ -745,7 +745,7 @@ requires-dist = [
 
 [[package]]
 name = "maxim-py"
-version = "3.6.2"
+version = "3.6.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "filetype" },
@@ -753,9 +753,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/91/a507bcfe88c12fb4eb25d57bc335f3eae15508f639a506cb73eeadf7b927/maxim_py-3.6.2.tar.gz", hash = "sha256:050be42763309d0eae8679a88c0565d50e78e0b26fbdb618639261f192e7a1ec", size = 115249 }
+sdist = { url = "https://files.pythonhosted.org/packages/78/dc/a85ecfdc7ee15c7877bae913b630d13cbf24f23b1302794c9280a89481d0/maxim_py-3.6.3.tar.gz", hash = "sha256:d722bc4de6dd66faeea8129d87ab14c11960cc089a375bb13f22593ac57bb853", size = 115442 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/12/3b/fc1ad23d87d9569a004266522fe9194e9568bb9e3f00dc50787816dd4b4a/maxim_py-3.6.2-py3-none-any.whl", hash = "sha256:a7a01ca68060214f2079ad666674dcfdb09ccf4abbb877d9999ea0fa7cb18b6b", size = 148145 },
+    { url = "https://files.pythonhosted.org/packages/a4/2a/8a9ea8d054c6280d9eb57113b86856d241e86dd9620de0f25c2df07fd7dd/maxim_py-3.6.3-py3-none-any.whl", hash = "sha256:a244bf397e95df59b6aa0032dab913ccfea39889c8f844956d94ef360c8ed907", size = 148289 },
 ]
 
 [[package]]
