@@ -18,10 +18,10 @@ var azureDeploymentName string
 
 func init() {
 	var err error
-	err = godotenv.Load()
+	err = godotenv.Overload()
 	if err != nil {
 		log.Println("Warning: Error loading .env file:", err)
-	}
+	}	
 	azureOpenAIKey = os.Getenv("AZURE_OPENAI_API_KEY")
 	if azureOpenAIKey == "" {
 		log.Fatal("AZURE_OPENAI_API_KEY environment variable is not set")

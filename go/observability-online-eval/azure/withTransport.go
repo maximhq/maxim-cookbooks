@@ -56,6 +56,8 @@ func usingMaximOpenAITransport() {
 	}
 	// Create a context
 	ctx := context.Background()
+	// Adding tags
+	ctx = context.WithValue(ctx, "maxim.tags", map[string]string{"env": "prod", "model": "gpt-4o-mini"})
 	// Create a chat completion request
 	chatCompletion, err := azOpenai.GetChatCompletions(ctx, azopenai.ChatCompletionsOptions{
 		Messages:       messages,
