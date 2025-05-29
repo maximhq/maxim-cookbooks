@@ -20,7 +20,7 @@ const ClaudeModeId = "anthropic.claude-3-5-sonnet-20240620-v1:0"
 
 func init() {
 	var err error
-	err = godotenv.Load()
+	err = godotenv.Overload()
 	if err != nil {
 		log.Println("Warning: Error loading .env file:", err)
 	}
