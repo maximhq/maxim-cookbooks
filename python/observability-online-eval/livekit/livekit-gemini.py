@@ -6,16 +6,16 @@ from livekit import agents
 from livekit import api as livekit_api
 from livekit.agents import Agent, AgentSession
 from livekit.api.room_service import CreateRoomRequest
-from livekit.plugins import openai
+from livekit.plugins import google
 from maxim import Maxim
 from maxim.logger.livekit import instrument_livekit
 
 dotenv.load_dotenv(override=True)
 
-logger = Maxim({"base_url":"https://app.beta.getmaxim.ai"}).logger()
+logger = Maxim({"base_url":"https://app.beta.getmaxim.ai", "debug":True}).logger()
 
 def on_event(event:str, data:dict):
-    print(f"##################Event: {event}, Data: {data}")        
+    print(f"##################Event: {event}, Data: {data}")
 
 instrument_livekit(logger, on_event)
 
@@ -26,7 +26,7 @@ class Assistant(Agent):
 async def entrypoint(ctx: agents.JobContext):
     # 1) pick a room name
     room_name = os.getenv("LIVEKIT_ROOM_NAME") or f"assistant-room-{uuid.uuid4().hex}"
-
+    
     # 2) provision the room via the server API
     lkapi = livekit_api.LiveKitAPI(
         url=os.getenv("LIVEKIT_URL"),
@@ -42,7 +42,8 @@ async def entrypoint(ctx: agents.JobContext):
         room = await lkapi.room.create_room(req)               # :contentReference[oaicite:0]{index=0}
         print(f"Room created: {room}")
         session = AgentSession(
-            llm=openai.realtime.RealtimeModel(voice="coral"),
+            llm=google.beta.realtime.RealtimeModel(model="gemini-2.0-flash-exp", voice="Puck"),
+            
         )
         await session.start(room=room, agent=Assistant())
         await ctx.connect()
