@@ -1,0 +1,11 @@
+[project]
+name = "mistral"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "ipykernel>=6.29.5",
+    "mistralai>=1.8.1",
+    "python-dotenv>=1.1.0",
+]
