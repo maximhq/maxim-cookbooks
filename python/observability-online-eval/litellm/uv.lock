@@ -1035,7 +1035,6 @@ source = { virtual = "." }
 dependencies = [
     { name = "ipykernel" },
     { name = "litellm" },
-    { name = "maxim-py" },
     { name = "pip" },
     { name = "python-dotenv" },
     { name = "together", version = "1.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
@@ -1046,24 +1045,9 @@ dependencies = [
 requires-dist = [
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "litellm", specifier = ">=1.67.4.post1" },
-    { name = "maxim-py", specifier = "==3.4.13" },
     { name = "pip", specifier = ">=25.0.1" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "together", specifier = ">=1.4.6" },
-]
-
-[[package]]
-name = "maxim-py"
-version = "3.4.13"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "requests" },
-    { name = "typing-extensions" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/ad/0bfd01e468be3bc47a122d09729878b970d3cbc203eca7440f132dcbf075/maxim_py-3.4.13.tar.gz", hash = "sha256:ae12121c27c71ec84714920660f3b98d1b3ee40f664d5c9f360af17ebf5761bd", size = 92937 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b4/ed/764c4d5329ff5a48c5792f64397232fd72b5ca4bea67d3c2371eba6a2e03/maxim_py-3.4.13-py3-none-any.whl", hash = "sha256:34ab395a2fcdd848c8089fbe24fd473ba98fbd6ecf0860c6f89040679d666893", size = 121660 },
 ]
 
 [[package]]
