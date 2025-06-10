@@ -6,7 +6,8 @@ description = "Maxim AI cookbook for gemini."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
     "fastapi>=0.115.8",
- "python-dotenv>=1.0.1",
- "maxim-py==3.4.11",
- "ipykernel>=6.29.5",
+    "python-dotenv>=1.0.1",
+    "maxim-py==3.4.11",
+    "ipykernel>=6.29.5",
+    "pandas>=2.3.0",
 ]
