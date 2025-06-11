@@ -18,3 +18,4 @@ launch.json
 .venv
 
 *.egg-info
+key.json
