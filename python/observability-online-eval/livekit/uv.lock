@@ -342,15 +342,6 @@ wheels = [
 ]
 
 [[package]]
-name = "filetype"
-version = "1.2.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bb/29/745f7d30d47fe0f251d3ad3dc2978a23141917661998763bebb6da007eb1/filetype-1.2.0.tar.gz", hash = "sha256:66b56cd6474bf41d8c54660347d37afcc3f7d1970648de365c102ef77548aadb", size = 998020 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/18/79/1b8fa1bb3568781e84c9200f951c735f3f157429f44be0495da55894d620/filetype-1.2.0-py2.py3-none-any.whl", hash = "sha256:7ce71b6880181241cf7ac8697a2f1eb6a8bd9b429f7ad6d27b8db9ba5f1c2d25", size = 19970 },
-]
-
-[[package]]
 name = "frozenlist"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -871,7 +862,6 @@ dependencies = [
     { name = "livekit" },
     { name = "livekit-agents", extra = ["google", "openai"] },
     { name = "livekit-api" },
-    { name = "maxim-py" },
     { name = "python-dotenv" },
     { name = "tavily-python" },
 ]
@@ -882,24 +872,8 @@ requires-dist = [
     { name = "livekit", specifier = ">=0.1.0" },
     { name = "livekit-agents", extras = ["google", "openai"], specifier = "~=1.0" },
     { name = "livekit-api", specifier = ">=1.0.2" },
-    { name = "maxim-py", specifier = "==3.9.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "tavily-python", specifier = ">=0.7.5" },
-]
-
-[[package]]
-name = "maxim-py"
-version = "3.9.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "filetype" },
-    { name = "requests" },
-    { name = "typing-extensions" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b6/e7/dd7d2d27e51e3e12811fbab10fbc735fb241dbd0ecbd82b4540377a39c02/maxim_py-3.9.0.tar.gz", hash = "sha256:d0a2b89066b22cffe8303e2bfd25e393a803dac61664cf1e87604cd72e2036af", size = 140826 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/5e/f7/4d480539a4702113fe3495afc4f0f8d2dc4f87945167efa7e46cb6b0f74a/maxim_py-3.9.0-py3-none-any.whl", hash = "sha256:803f41b3644305f50d3ca9fb14f1ae02bd4e6a29595c4f6a6cf2f7489f9dc6ba", size = 183074 },
 ]
 
 [[package]]

@@ -1,7 +1,7 @@
 [project]
 name = "maxim-langgraph-cookbook"
 version = "0.1.0"
-requires-python = ">=3.9"
+requires-python = ">=3.9.20"
 description = "Maxim AI cookbook for gemini."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
@@ -11,5 +11,6 @@ dependencies = [
     "langchain-community>=0.3.20",
     "langchain-openai>=0.3.11",
     "langgraph>=0.3.21",
-    "python-dotenv>=1.0.1"    
+    "maxim-py==3.9.1",
+    "python-dotenv>=1.0.1",
 ]
