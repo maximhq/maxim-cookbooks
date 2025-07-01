@@ -10,4 +10,5 @@ dependencies = [
  "pip>=25.0.1",
  "python-dotenv>=1.0.1",
  "together>=1.4.6",
+ "maxim-py>=3.9.6",
 ]
