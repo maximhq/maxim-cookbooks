@@ -18,7 +18,7 @@ async function main() {
   }
 
   const query = "Hi OpenAI, what is 3 + 2?";
-  const maximTracer = new MaximLangchainTracer(logger as any);
+  const maximTracer = new MaximLangchainTracer(logger);
   const trace = logger.trace({ id: uuid(), name: "maths" });
 
   trace.input(query);

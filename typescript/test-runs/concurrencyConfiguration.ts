@@ -1,4 +1,4 @@
-import { createDataStructure, Maxim } from "@maximai/maxim-js";
+import { createDataStructure, Data, Maxim } from "@maximai/maxim-js";
 import "dotenv/config";
 import { generateResponse } from "./utils/openai-helper.js";
 
@@ -70,7 +70,7 @@ console.log(`🔗 Results: ${moderateResult.testRunResult.link}\n`);
 console.log("📌 Example 3: Local Workflow with High Concurrency (Concurrency = 5)");
 console.log("Best for: Local processing, robust APIs, maximum speed\n");
 
-async function intelligentProcessor(data: any) {
+async function intelligentProcessor(data: Data<typeof dataStructure>) {
   const startTime = Date.now();
   const processingId = Math.random().toString(36).substr(2, 6);
 

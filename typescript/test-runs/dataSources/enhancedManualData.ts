@@ -1,4 +1,4 @@
-import { createDataStructure, Maxim } from "@maximai/maxim-js";
+import { createDataStructure, Data, Maxim } from "@maximai/maxim-js";
 import "dotenv/config";
 import { generateResponse } from "../utils/openai-helper.js";
 
@@ -75,15 +75,17 @@ const technicalDataset = [
 ];
 
 // Enhanced output processor using real OpenAI
-async function enhancedTechnicalProcessor(data: any) {
+async function enhancedTechnicalProcessor(data: Data<typeof dataStructure>) {
   const startTime = Date.now();
   const sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+  const category = Array.isArray(data.Category) ? data.Category.join(", ") : data.Category;
+  const difficulty = Array.isArray(data["Difficulty Level"]) ? data["Difficulty Level"].join(", ") : data["Difficulty Level"];
 
-  console.log(`[${sessionId}] Processing ${data.Category} question (${data["Difficulty Level"]})`);
+  console.log(`[${sessionId}] Processing ${category} question (${difficulty})`);
 
   try {
     // Create specialized system prompt based on category and difficulty
-    const systemPrompt = createSystemPrompt(data.Category, data["Difficulty Level"]);
+    const systemPrompt = createSystemPrompt(category, difficulty);
 
     // Handle context properly
     const contextString = Array.isArray(data["Domain Context"]) ? data["Domain Context"].join("\n") : data["Domain Context"];
@@ -94,8 +96,8 @@ async function enhancedTechnicalProcessor(data: any) {
     const endTime = Date.now();
 
     // Calculate difficulty-based cost multipliers
-    const difficultyMultiplier = getDifficultyMultiplier(data["Difficulty Level"]);
-    const categoryMultiplier = getCategoryMultiplier(data.Category);
+    const difficultyMultiplier = getDifficultyMultiplier(difficulty);
+    const categoryMultiplier = getCategoryMultiplier(category);
 
     return {
       data: aiResponse.response,

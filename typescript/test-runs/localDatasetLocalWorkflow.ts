@@ -1,4 +1,4 @@
-import { createDataStructure, Maxim } from "@maximai/maxim-js";
+import { createDataStructure, Data, Maxim } from "@maximai/maxim-js";
 import "dotenv/config";
 import { generateResponse } from "./utils/openai-helper.js";
 
@@ -65,7 +65,7 @@ const hrPolicyDataset = [
 ];
 
 // Intelligent HR workflow using OpenAI
-async function hrPolicyWorkflow(data: any) {
+async function hrPolicyWorkflow(data: Data<typeof dataStructure>) {
   const startTime = Date.now();
   const sessionId = `hr_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`;
 
@@ -94,7 +94,7 @@ async function hrPolicyWorkflow(data: any) {
         cost: aiResponse.cost,
         hrSpecific: {
           queryType: categorizeHRQuery(data.Input),
-          policyReferenced: extractPolicyReference(data.Context),
+          policyReferenced: extractPolicyReference(contextString),
           responseType: "policy-based",
         },
         performance: {

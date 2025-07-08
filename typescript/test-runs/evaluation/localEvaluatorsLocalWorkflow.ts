@@ -1,4 +1,4 @@
-import { createCustomEvaluator, createDataStructure, Maxim } from "@maximai/maxim-js";
+import { createCustomEvaluator, createDataStructure, Data, Maxim } from "@maximai/maxim-js";
 import "dotenv/config";
 
 let apiKey: string, workspaceId: string, datasetId: string;
@@ -18,7 +18,7 @@ const dataStructure = createDataStructure({
 });
 
 // Define local workflow function
-async function localWorkflow(data: any) {
+async function localWorkflow(data: Data<typeof dataStructure>) {
   const startTime = Date.now();
   console.log(`Processing: ${data.Input}`);
 
@@ -30,7 +30,7 @@ async function localWorkflow(data: any) {
   let response: string;
 
   if (inputLower.includes("summarize") || inputLower.includes("summary")) {
-    response = `Summary: ${data.Context?.substring(0, 100) || "Based on available information"}...`;
+    response = `Summary: ${data.Context ? Array.isArray(data.Context) ? data.Context.join("\n").substring(0, 100) : data.Context.substring(0, 100) : "Based on available information"}...`;
   } else if (inputLower.includes("explain") || inputLower.includes("what")) {
     response = `Explanation: ${data.Input} can be understood as follows based on the provided context.`;
   } else if (inputLower.includes("compare") || inputLower.includes("vs")) {

@@ -1,4 +1,4 @@
-import { createDataStructure, Maxim } from "@maximai/maxim-js";
+import { createDataStructure, Data, Maxim } from "@maximai/maxim-js";
 import "dotenv/config";
 import { generateResponse } from "./utils/openai-helper.js";
 
@@ -31,7 +31,7 @@ const dataStructure = createDataStructure({
 });
 
 // Local workflow using OpenAI for intelligent processing
-async function intelligentLocalWorkflow(data: any) {
+async function intelligentLocalWorkflow(data: Data<typeof dataStructure>) {
   const startTime = Date.now();
   const processingId = Math.random().toString(36).substr(2, 6);
 
