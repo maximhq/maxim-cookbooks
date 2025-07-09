@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  agno-agent:
+    build: .
+    container_name: agno-agent
+    env_file:
+      - .env
+    stdin_open: true      # For interactive input
+    tty: true             # For interactive terminal
