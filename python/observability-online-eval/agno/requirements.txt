@@ -1,7 +1,0 @@
-agno
-google-genai
-python-dotenv
-ddgs
-yfinance
-googlesearch-python
-pycountry

@@ -1,18 +1,23 @@
 # Use an official Python image
 FROM python:3.10-slim
 
+# Install system dependencies (if needed)
+RUN apt-get update && apt-get install -y build-essential curl
+
+# Install uv
+RUN curl -Ls https://astral.sh/uv/install.sh | sh
+
+# Copy maxim-py into the Docker build context
+COPY ../../../../maxim-py /maxim-py
+
 # Set work directory
 WORKDIR /app
 
-# Install system dependencies (if needed)
-RUN apt-get update && apt-get install -y build-essential
-
-# Copy requirements and install
-COPY requirements.txt .
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of the code
+# Copy project files
 COPY . .
+
+# Install dependencies with uv
+RUN /root/.local/bin/uv pip install --system --no-cache-dir .
 
 # Set environment variables (for production, use secrets or .env)
 ENV PYTHONUNBUFFERED=1

@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agno-agent"
+version = "0.1.0"
+description = "Your project description here"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+dependencies = [
+    "agno",
+    "google-genai",
+    "python-dotenv",
+    "ddgs",
+    "yfinance",
+    "googlesearch-python",
+    "pycountry",
+    "maxim-py",
+]
+
+[tool.uv.sources]
+maxim-py = { path = "../../../../maxim-py", editable = true }
