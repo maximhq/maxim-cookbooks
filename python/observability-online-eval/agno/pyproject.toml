@@ -11,6 +11,7 @@ authors = [
 ]
 dependencies = [
     "agno",
+    "openai",
     "google-genai",
     "python-dotenv",
     "ddgs",
