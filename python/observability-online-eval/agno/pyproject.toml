@@ -20,6 +20,3 @@ dependencies = [
     "pycountry",
     "maxim-py",
 ]
-
-[tool.uv.sources]
-maxim-py = { path = "../../../../maxim-py", editable = true }

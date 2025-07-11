@@ -11,11 +11,7 @@ from maxim.logger.agno import instrument_agno
 # Load environment variables from .env file
 load_dotenv()
 
-instrument_agno(Maxim(
-    {
-        "debug": True
-    }
-).logger())
+instrument_agno(Maxim().logger())
 
 # Web Search Agent: Fetches financial information from the web
 web_search_agent = Agent(
@@ -70,6 +66,3 @@ if __name__ == "__main__":
         print("---------------------------------")
         print("Agent:", agent_reply)
         messages.append({"role": "agent", "content": str(agent_reply)})
-
-        # Print the full response object for debugging
-        print("Full response object:", response)
