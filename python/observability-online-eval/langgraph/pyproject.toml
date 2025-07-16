@@ -11,6 +11,6 @@ dependencies = [
     "langchain-community>=0.3.20",
     "langchain-openai>=0.3.11",
     "langgraph>=0.3.21",
-    "maxim-py==3.9.1",
+    "maxim-py==3.9.6",
     "python-dotenv>=1.0.1",
 ]
