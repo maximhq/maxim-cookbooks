@@ -614,7 +614,7 @@ requires-dist = [
     { name = "google-adk", specifier = ">=1.0.0" },
     { name = "google-cloud-aiplatform", extras = ["adk", "agent-engines"], specifier = ">=1.93.0" },
     { name = "google-genai", specifier = ">=1.9.0" },
-    { name = "maxim-py" },
+    { name = "maxim-py", directory = "../../../../../maxim-py" },
     { name = "mypy", marker = "extra == 'lint'", specifier = ">=1.15.0" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
@@ -1588,15 +1588,64 @@ wheels = [
 [[package]]
 name = "maxim-py"
 version = "3.11.0"
-source = { registry = "https://pypi.org/simple" }
+source = { directory = "../../../../../maxim-py" }
 dependencies = [
     { name = "filetype" },
     { name = "httpx" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/d2/c5e608ab0cd03ac90ff1ddf5df645c6001ff32aa79c9991db13eb3d925a8/maxim_py-3.11.0.tar.gz", hash = "sha256:04c7c8057bd6e25e2a396354fcc418a76c03c7d942b7a138167292b1c2e14016", size = 226463, upload-time = "2025-10-12T12:33:13.442Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/ef/81c4893be8ab5ff688e1d1fc789983ece8849ada87b8fe8c137991b2563a/maxim_py-3.11.0-py3-none-any.whl", hash = "sha256:5e4f2f753444c7fc67173755465980833fcfeeb17c7550be7485a2f47ee86dfd", size = 284441, upload-time = "2025-10-12T12:33:10.152Z" },
+
+[package.metadata]
+requires-dist = [
+    { name = "filetype" },
+    { name = "httpx", specifier = ">=0.28.1" },
+    { name = "typing-extensions" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "agno", specifier = ">=1.7.1" },
+    { name = "anthropic", specifier = ">=0.54.0" },
+    { name = "boto3", specifier = ">=1.7.84" },
+    { name = "botocore", specifier = ">=1.10.84" },
+    { name = "build", specifier = ">=1.2.2.post1" },
+    { name = "crewai", specifier = "==0.130.0" },
+    { name = "filetype", specifier = ">=1.2.0" },
+    { name = "fireworks-ai", specifier = ">=0.17.9" },
+    { name = "flask", specifier = ">=3.1.1" },
+    { name = "google-adk", specifier = ">=1.16.0" },
+    { name = "google-genai", specifier = ">=1.18.0" },
+    { name = "groq", specifier = ">=0.30.0" },
+    { name = "langchain", specifier = "==0.3.25" },
+    { name = "langchain-anthropic", specifier = ">=0.3.15" },
+    { name = "langchain-community", specifier = ">=0.3.25" },
+    { name = "langchain-openai", specifier = ">=0.3.23" },
+    { name = "langgraph", specifier = ">=0.4.8" },
+    { name = "litellm", specifier = ">=1.72.6" },
+    { name = "livekit", specifier = ">=1.0.8" },
+    { name = "livekit-agents", extras = ["google", "silero"], specifier = "~=1.0" },
+    { name = "livekit-agents", extras = ["openai"], specifier = ">=1.0.22" },
+    { name = "livekit-api", specifier = ">=1.0.2" },
+    { name = "livekit-plugins-noise-cancellation", specifier = "~=0.2" },
+    { name = "llama-index-core", specifier = ">=0.12.49" },
+    { name = "llama-index-llms-openai", specifier = ">=0.4.7" },
+    { name = "mistralai", specifier = ">=1.8.2" },
+    { name = "ollama", specifier = ">=0.5.1" },
+    { name = "openai-agents", specifier = ">=0.0.17" },
+    { name = "portkey-ai", specifier = ">=1.13.0" },
+    { name = "pydantic-ai", specifier = ">=0.7.6" },
+    { name = "pydoc-markdown", specifier = ">=2.1.3" },
+    { name = "pytest", specifier = ">=8.4.0" },
+    { name = "python-dotenv", specifier = ">=0.9.9" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "requests", specifier = ">=2.32.3" },
+    { name = "setuptools", specifier = ">=80.9.0" },
+    { name = "smolagents", specifier = ">=1.21.2" },
+    { name = "tavily-python", specifier = ">=0.7.9" },
+    { name = "together", specifier = ">=1.4.6" },
+    { name = "typing-extensions", specifier = ">=4.13.2" },
+    { name = "urllib3", specifier = ">=2.4.0" },
+    { name = "wheel", specifier = ">=0.45.1" },
 ]
 
 [[package]]
