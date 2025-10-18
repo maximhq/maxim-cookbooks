@@ -41,7 +41,16 @@ async def test_happy_path():
     """
     ).strip()
 
-    runner = InMemoryRunner(agent=root_agent)
+    # Import the maxim plugin
+    try:
+        from financial_advisor import maxim_plugin
+        plugins = [maxim_plugin] if maxim_plugin else []
+        print(f"✅ Using Maxim plugin for instrumentation")
+    except ImportError:
+        plugins = []
+        print(f"⚠️  Running without Maxim plugin")
+
+    runner = InMemoryRunner(agent=root_agent, plugins=plugins)
     session = await runner.session_service.create_session(
         app_name=runner.app_name, user_id="test_user"
     )
