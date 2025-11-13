@@ -7,7 +7,7 @@ authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
     "agents>=1.4.0",
     "ipykernel>=6.29.5",
-    "openai>=1.65.4",
+    "openai>=2.7.2",
     "openai-agents>=0.0.14",
     "python-dotenv>=1.0.1",    
 ]
