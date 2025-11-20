@@ -14,8 +14,8 @@ dependencies = [
  "langchain-openai>=0.1.16",
  "langchain-community>=0.2.7",
  "google-cloud-aiplatform>=1.97.0",
- "maxim-py",
+ "maxim-py==3.13.6",
 ]
 
-[tool.uv.sources]
-maxim-py = { path = "../../../../maxim-py", editable = true }
+# [tool.uv.sources]
+# maxim-py = { path = "../../../../maxim-py", editable = true }
