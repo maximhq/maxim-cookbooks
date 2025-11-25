@@ -1,0 +1,13 @@
+[project]
+name = "maxim-elevenlabs-stt-tts"
+version = "0.1.0"
+requires-python = ">=3.9.20"
+description = "Maxim AI cookbook for tracing ElevenLabs STT and TTS operations."
+authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
+dependencies = [
+    "python-dotenv>=1.0.1",
+    "elevenlabs>=1.0.0",
+    "ipykernel>=6.29.5",
+    "maxim-py>=3.14.0",
+]
+
