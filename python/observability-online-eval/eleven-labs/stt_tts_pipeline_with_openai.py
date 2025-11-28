@@ -1,4 +1,4 @@
-"""Example agent using ElevenLabs STT-TTS pipeline with Maxim tracing."""
+"""Example agent using ElevenLabs STT-TTS pipeline with OpenAI LLM and Maxim tracing."""
 
 import os
 from uuid import uuid4
@@ -7,19 +7,25 @@ from dotenv import load_dotenv
 from elevenlabs.play import play
 from elevenlabs.client import ElevenLabs
 from elevenlabs.core import RequestOptions
+from openai import OpenAI
 
 from maxim import Maxim
 from maxim.logger.components.trace import TraceConfigDict
 from maxim.logger.elevenlabs import instrument_elevenlabs
+from maxim.logger.openai import MaximOpenAIClient
 
 
 load_dotenv()
 
 # Configuration
 ELEVENLABS_API_KEY = os.getenv("EL_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 if not ELEVENLABS_API_KEY:
     raise ValueError("ELEVENLABS_API_KEY environment variable is not set")
+
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
 
 # Initialize Maxim logger
 # This automatically picks up MAXIM_API_KEY and MAXIM_LOG_REPO_ID from environment variables
@@ -29,27 +35,37 @@ logger = Maxim().logger()
 instrument_elevenlabs(logger)
 
 # Initialize ElevenLabs client
-client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+
+# Initialize OpenAI client with Maxim integration
+openai_client = MaximOpenAIClient(
+    client=OpenAI(api_key=OPENAI_API_KEY),
+    logger=logger
+)
 
 
-def mock_llm(transcript: str) -> str:
+def call_openai_llm(transcript: str, trace_id: str) -> str:
     """
-    Mock LLM that generates a response based on the user's transcript.
-    In a real scenario, this would call an actual LLM API.
+    Call OpenAI LLM to generate a response based on the user's transcript.
+    Uses the same trace ID to link the LLM call with the STT-TTS pipeline.
     """
-    # Simple mock responses based on transcript content
-    transcript_lower = transcript.lower()
+    messages = [
+        {"role": "system", "content": "You are a helpful assistant. Respond concisely and naturally."},
+        {"role": "user", "content": transcript},
+    ]
 
-    if "hello" in transcript_lower or "hi" in transcript_lower:
-        return "Hello! How can I help you today?"
-    elif "weather" in transcript_lower:
-        return "I'm sorry, I don't have access to weather information right now."
-    elif "time" in transcript_lower:
-        return "I don't have access to the current time, but I'm here to help with other questions!"
-    elif "goodbye" in transcript_lower or "bye" in transcript_lower:
-        return "Goodbye! Have a great day!"
-    else:
-        return f"I heard you say: {transcript}. How can I assist you further?"
+    # Create a chat completion request with trace ID in extra_headers
+    response = openai_client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        extra_headers={
+            "x-maxim-trace-id": trace_id
+        }
+    )
+
+    # Extract response text
+    response_text = response.choices[0].message.content
+    return response_text
 
 
 def stt_tts_pipeline_agent():
@@ -59,11 +75,11 @@ def stt_tts_pipeline_agent():
     Flow:
     1. User provides audio input (speech)
     2. STT converts audio to text (transcript) - instrumented, sets trace input
-    3. Mock LLM processes the transcript and generates a response
+    3. OpenAI LLM processes the transcript and generates a response - uses same trace ID
     4. TTS converts LLM response text to audio - instrumented, sets trace output
     5. Audio is returned as output
 
-    Both STT and TTS operations are traced under a single trace via instrumentation.
+    All operations (STT, LLM, TTS) are traced under a single trace via instrumentation.
     The trace input is the user's speech transcript, and the output is the LLM response text.
     Both user speech and assistant speech audio files are attached to the trace.
     """
@@ -74,8 +90,8 @@ def stt_tts_pipeline_agent():
     trace = logger.trace(
         TraceConfigDict(
             id=trace_id,
-            name="STT-TTS Pipeline Agent",
-            tags={"provider": "elevenlabs", "operation": "pipeline"},
+            name="STT-OpenAI-TTS Pipeline Agent",
+            tags={"provider": "elevenlabs+openai", "operation": "pipeline"},
         )
     )
 
@@ -86,7 +102,7 @@ def stt_tts_pipeline_agent():
         }
     )
 
-    print("=== STT-TTS Pipeline Agent ===")
+    print("=== STT-OpenAI-TTS Pipeline Agent ===")
     print(f"Trace ID: {trace_id}")
 
     audio_file_path = os.path.join(
@@ -104,7 +120,7 @@ def stt_tts_pipeline_agent():
         # - Input: audio attachment (speech)
         # - Output: transcript text
         with open(audio_file_path, "rb") as audio_file:
-            transcript = client.speech_to_text.convert(
+            transcript = elevenlabs_client.speech_to_text.convert(
                 file=audio_file,
                 model_id="scribe_v1",
                 request_options=request_options
@@ -123,9 +139,9 @@ def stt_tts_pipeline_agent():
 
         print(f"Transcript: {transcript_text}")
 
-        # Mock LLM processing
-        print("\n=== Mock LLM Processing ===")
-        response_text = mock_llm(transcript_text)
+        # OpenAI LLM processing
+        print("\n=== OpenAI LLM Processing ===")
+        response_text = call_openai_llm(transcript_text, trace_id)
         print(f"LLM Response: {response_text}")
 
         # Text-to-Speech
@@ -135,7 +151,7 @@ def stt_tts_pipeline_agent():
         # This will also add to the same trace (trace_id from request_options)
         # - Input: LLM response text (already set as trace output above)
         # - Output: audio attachment (assistant speech)
-        audio_output = client.text_to_speech.convert(
+        audio_output = elevenlabs_client.text_to_speech.convert(
             text=response_text,
             voice_id="JBFqnCBsd6RMkjVDRZzb",
             model_id="eleven_multilingual_v2",
@@ -155,15 +171,15 @@ def stt_tts_pipeline_agent():
         # Set trace input to the transcript
         trace.set_input(dummy_transcript)
 
-        # Mock LLM processing
-        print("\n=== Mock LLM Processing ===")
-        response_text = mock_llm(dummy_transcript)
+        # OpenAI LLM processing
+        print("\n=== OpenAI LLM Processing ===")
+        response_text = call_openai_llm(dummy_transcript, trace_id)
         print(f"LLM Response: {response_text}")
 
         # Text-to-Speech
         print("\n=== Text-to-Speech ===")
 
-        audio_output = client.text_to_speech.convert(
+        audio_output = elevenlabs_client.text_to_speech.convert(
             text=response_text,
             voice_id="JBFqnCBsd6RMkjVDRZzb",
             model_id="eleven_multilingual_v2",
@@ -179,6 +195,7 @@ def stt_tts_pipeline_agent():
     print("- Output: LLM response text (set by TTS instrumentation)")
     print("- Input attachment: User speech audio file (added by STT instrumentation)")
     print("- Output attachment: Assistant speech audio file (added by TTS instrumentation)")
+    print("- OpenAI LLM generation (linked via trace ID)")
     print(f"- Trace ID: {trace_id}")
 
 
