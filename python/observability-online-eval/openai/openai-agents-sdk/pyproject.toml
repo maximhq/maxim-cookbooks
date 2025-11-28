@@ -1,13 +1,16 @@
 [project]
 name = "maxim-openai-agents-logging"
 version = "0.1.0"
-requires-python = ">=3.9"
-description = "Maxim AI cookbook for tracing openai-agents."
+requires-python = ">=3.9.20"
+description = "Maxim AI cookbook for tracing openai-agents with voice support."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
  "python-dotenv>=1.0.1",
- "maxim-py==3.4.10",
- "openai-agents>=0.0.3",
- "openai>=1.66.2",
+ "maxim-py>=3.13.6",
+ "openai-agents[voice]>=0.0.3",
+ "openai[agents]>=1.66.2",
  "pydantic>=2.10.6",
+ "numpy>=1.24.0",
+ "sounddevice>=0.4.6",
+ "websockets>=12.0",
 ]
