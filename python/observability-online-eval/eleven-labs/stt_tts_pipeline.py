@@ -12,7 +12,6 @@ from maxim import Maxim
 from maxim.logger.components.trace import TraceConfigDict
 from maxim.logger.elevenlabs import instrument_elevenlabs
 
-
 load_dotenv()
 
 # Configuration

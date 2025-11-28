@@ -9,6 +9,5 @@ dependencies = [
     "elevenlabs>=1.0.0",
     "ipykernel>=6.29.5",
     "maxim-py>=3.14.0",
-    "openai>=1.0.0",
 ]
 
