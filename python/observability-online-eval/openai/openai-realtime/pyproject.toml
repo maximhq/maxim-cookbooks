@@ -1,0 +1,14 @@
+[project]
+name = "openai-realtime"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "openai>=2.8.1",
+  "python-dotenv>=0.9.9",
+  "simpleaudio>=1.0.4",
+  "maxim-py",
+  "sounddevice>=0.5.3",
+  "websockets>=15.0.1",
+]
