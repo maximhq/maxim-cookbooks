@@ -1,0 +1,11 @@
+[project]
+name = "coding-agent-cookbook"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "openai>=1.0",
+    "maxim-py>=3.14.0",
+    "fastapi>=0.100",
+    "uvicorn>=0.20",
+    "python-dotenv>=1.0",
+]
