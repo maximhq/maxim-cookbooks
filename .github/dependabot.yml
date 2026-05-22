@@ -1,0 +1,101 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /go/observability-online-eval/azure
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /go/observability-online-eval/bedrock
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /go/observability-online-eval/manual-tracing
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /go/observability-online-eval/misc/toolCall
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: gomod
+    directory: /go/observability-online-eval/openai
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: pip
+    directory: /python/observability-online-eval/crew-ai/cooking-agent
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directory: /python/observability-online-eval/litellm-proxy
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: pip
+    directory: /python/observability-online-eval/litellm-proxy
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: pip
+    directory: /python/observability-online-eval/openai/computer-use
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/advanced-examples
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/chain-runnables
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/chat-completion-streaming
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/chat-completion
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/openai-chat-completion
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langchain/tool-calling
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/langgraph/customer-support
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/observability-online-eval/manual-tracing
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/react-native
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: npm
+    directory: /typescript/test-runs
+    schedule:
+      interval: weekly
