@@ -11,7 +11,7 @@ authors = [
 dependencies = [
     "ipykernel>=6.29.5",
     "litellm[proxy]>=1.30.0",
-    "maxim-py==3.4.16",
+    "maxim-py==3.14.18",
     "python-dotenv>=0.21.1",
 ]
 
