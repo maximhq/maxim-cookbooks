@@ -13,7 +13,7 @@
     "@langchain/langgraph": "^0.2.44",
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.4.2",
     "zod": "^3.24.1",
     "zod-to-json-schema": "^3.24.1"
   }
