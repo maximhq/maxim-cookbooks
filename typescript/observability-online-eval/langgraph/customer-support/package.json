@@ -9,7 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "@langchain/community": "^0.3.28",
-    "@langchain/core": "^0.3.37",
+    "@langchain/core": "^1.1.48",
     "@langchain/langgraph": "^0.2.44",
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
