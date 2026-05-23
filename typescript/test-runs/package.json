@@ -10,7 +10,7 @@
   "dependencies": {
     "@maximai/maxim-js": "6.3.0",
     "dotenv": "16.5.0",
-    "openai": "5.0.2"
+    "openai": "6.39.0"
   },
   "devDependencies": {
     "@types/node": "22.15.29",
