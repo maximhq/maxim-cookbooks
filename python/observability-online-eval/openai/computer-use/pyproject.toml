@@ -9,6 +9,6 @@ dependencies = [
     "langchain==0.3.26",
     "openai==1.91.0",
     "scrapybara==2.5.3",
-    "maxim-py==3.9.6",
+    "maxim-py==3.14.18",
     "python-dotenv>=1.1.1",
 ]
