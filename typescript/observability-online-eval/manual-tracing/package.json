@@ -8,7 +8,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@maximai/maxim-js": "6.3.0",
+    "@maximai/maxim-js": "6.30.2",
     "openai": "5.0.2",
     "dotenv": "16.5.0",
     "mime-types": "3.0.1"
