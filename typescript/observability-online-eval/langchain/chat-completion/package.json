@@ -15,7 +15,7 @@
     "@langchain/openai": "^0.3.16",
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^17.4.2",
     "langchain": "^0.3.9"
   },
   "devDependencies": {
