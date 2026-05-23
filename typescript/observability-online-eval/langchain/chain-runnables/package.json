@@ -19,6 +19,6 @@
     "langchain": "^0.3.9"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5"
+    "@types/node": "^25.9.1"
   }
 }
