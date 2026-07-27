@@ -14,7 +14,7 @@
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
     "dotenv": "^16.4.7",
-    "zod": "^3.24.1",
+    "zod": "^4.4.3",
     "zod-to-json-schema": "^3.24.1"
   }
 }
