@@ -17,7 +17,7 @@
     "@maximai/maxim-js-langchain": "^1.0.0",
     "dotenv": "^16.4.7",
     "langchain": "^0.3.9",
-    "uuid": "^11.0.5"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5"
