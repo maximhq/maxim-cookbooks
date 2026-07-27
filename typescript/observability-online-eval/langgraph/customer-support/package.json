@@ -8,7 +8,7 @@
   "keywords": [],
   "license": "ISC",
   "dependencies": {
-    "@langchain/community": "^0.3.28",
+    "@langchain/community": "^1.1.29",
     "@langchain/core": "^0.3.37",
     "@langchain/langgraph": "^0.2.44",
     "@maximai/maxim-js": "^6.1.2",
