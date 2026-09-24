@@ -9,4 +9,5 @@ dependencies = [
     "maxim-py==3.9.6",
     "openai>=1.78.1",
     "python-dotenv>=1.1.0",
+    "requests>=2.33.0",
 ]
