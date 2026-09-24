@@ -3,8 +3,8 @@ import logging
 import os
 from math import log
 from flask import Flask, jsonify, request
-from langchain.chat_models.openai import ChatOpenAI
-from langchain.tools import tool
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
 from langchain_openai import OpenAIEmbeddings
 
 from pymongo.mongo_client import MongoClient

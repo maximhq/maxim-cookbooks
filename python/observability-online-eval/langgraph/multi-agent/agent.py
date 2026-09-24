@@ -17,8 +17,8 @@ from typing import (
 from dotenv.main import load_dotenv
 from flask import Flask, jsonify, request
 from IPython.display import Image, display
-from langchain.chains import create_sql_query_chain
-from langchain.tools import tool
+from langchain_classic.chains import create_sql_query_chain
+from langchain_core.tools import tool
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import Docx2txtLoader, PyPDFLoader
 from langchain_community.embeddings.sentence_transformer import (
@@ -47,14 +47,11 @@ from langchain_core.runnables import (
 )
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langgraph._api.deprecation import deprecated_parameter
 from langgraph.errors import ErrorCode, create_error_message
 from langgraph.graph import END, START, MessagesState, StateGraph
-from langgraph.graph.graph import CompiledGraph
 from langgraph.graph.message import add_messages
 from langgraph.managed import IsLastStep, RemainingSteps
 from langgraph.prebuilt import create_react_agent
-from langgraph.prebuilt.tool_executor import ToolExecutor
 from langgraph.prebuilt.tool_node import ToolNode, tools_condition
 from langgraph.store.base import BaseStore
 from langgraph.types import Checkpointer, Command

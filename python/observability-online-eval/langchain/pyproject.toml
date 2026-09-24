@@ -1,7 +1,7 @@
 [project]
 name = "maxim-langchain-tracing"
 version = "0.1.0"
-requires-python = ">=3.9.20"
+requires-python = ">=3.10"
 description = "Maxim AI cookbook for tracing lanchain."
 authors = [{ name = "Maxim Engineering", email = "eng@getmaxim.ai" }]
 dependencies = [
@@ -9,10 +9,11 @@ dependencies = [
  "pip>=25.0.1",
  "python-dotenv>=1.0.1",
  "together>=1.4.6",
- "langchain-core==0.2.17",
- "langchain-google-vertexai==1.0.4",
- "langchain-openai>=0.1.16",
- "langchain-community>=0.2.7",
+ "langchain>=1.3.9",
+ "langchain-core>=1.2.22",
+ "langchain-google-vertexai>=3.0.0",
+ "langchain-openai>=1.1.14",
+ "langchain-community>=0.3.27",
  "google-cloud-aiplatform>=1.97.0",
  "maxim-py==3.13.6",
 ]

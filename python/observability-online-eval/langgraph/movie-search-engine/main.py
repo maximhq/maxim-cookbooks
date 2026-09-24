@@ -9,7 +9,7 @@ from uuid import uuid4
 import dotenv
 import weaviate
 from flask import Flask, jsonify, request
-from langchain.tools.retriever import create_retriever_tool
+from langchain_core.tools import create_retriever_tool
 from langchain_anthropic import ChatAnthropic
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.messages import (BaseMessage,
