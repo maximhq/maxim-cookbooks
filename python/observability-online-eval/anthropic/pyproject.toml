@@ -8,4 +8,5 @@ dependencies = [
     "anthropic>=0.50.0",
     "ipykernel>=6.29.5",    
     "python-dotenv>=1.1.0",
+    "maxim-py==3.5.7",
 ]
