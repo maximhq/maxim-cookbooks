@@ -351,22 +351,7 @@ wheels = [
 ]
 
 [[package]]
-name = "maxim-py"
-version = "3.8.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "filetype" },
-    { name = "requests" },
-    { name = "typing-extensions" },
-    { name = "urllib3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/74/061ada61192d9ad79544055542868638c1925f4db4b64d818059a0ca6147/maxim_py-3.8.1.tar.gz", hash = "sha256:ec0606acbc41852bbbbb8f0cee1ab35b98d68fd5e1ffd172eaf8cc6810d87b1d", size = 132871, upload-time = "2025-06-04T18:40:33.799Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d7/09/e845960e2b36ebc01d6a4ce4132e4ec8ac0ec34f8fe6b7e27ac11e784fd0/maxim_py-3.8.1-py3-none-any.whl", hash = "sha256:641c6988fcb80454dc7215158c83718b9fe41ca3a68a84e88e147c2aab6cc066", size = 174247, upload-time = "2025-06-04T18:40:31.693Z" },
-]
-
-[[package]]
-name = "mistral"
+name = "maxim-mistral-example"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
@@ -382,6 +367,21 @@ requires-dist = [
     { name = "maxim-py", specifier = "==3.8.1" },
     { name = "mistralai", specifier = ">=1.8.1" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
+]
+
+[[package]]
+name = "maxim-py"
+version = "3.8.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "filetype" },
+    { name = "requests" },
+    { name = "typing-extensions" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/74/061ada61192d9ad79544055542868638c1925f4db4b64d818059a0ca6147/maxim_py-3.8.1.tar.gz", hash = "sha256:ec0606acbc41852bbbbb8f0cee1ab35b98d68fd5e1ffd172eaf8cc6810d87b1d", size = 132871, upload-time = "2025-06-04T18:40:33.799Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d7/09/e845960e2b36ebc01d6a4ce4132e4ec8ac0ec34f8fe6b7e27ac11e784fd0/maxim_py-3.8.1-py3-none-any.whl", hash = "sha256:641c6988fcb80454dc7215158c83718b9fe41ca3a68a84e88e147c2aab6cc066", size = 174247, upload-time = "2025-06-04T18:40:31.693Z" },
 ]
 
 [[package]]
