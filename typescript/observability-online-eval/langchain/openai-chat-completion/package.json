@@ -11,7 +11,7 @@
   "dependencies": {
     "@maximai/maxim-js": "^6.1.2",
     "@maximai/maxim-js-langchain": "^1.0.0",
-    "dotenv": "^16.4.7",
+    "dotenv": "^18.0.3",
     "langchain": "^0.3.9"
   }
 }
