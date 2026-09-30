@@ -99,3 +99,103 @@ updates:
     directory: /typescript/test-runs
     schedule:
       interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/anthropic
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/attachments
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/bedrock
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/eleven-labs
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/google-adk/financial-advisor
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/google/gemini
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/langchain
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/langgraph
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/litellm-proxy
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/litellm
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/livekit
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/manual-tracing
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/misc
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/mistral
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/openai/computer-use
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/openai/openai-agents-sdk
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/openai/openai-realtime
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/observability-online-eval/openai/openai-sdk
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/prompt-management
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: uv
+    directory: /python/test-runs
+    schedule:
+      interval: weekly
