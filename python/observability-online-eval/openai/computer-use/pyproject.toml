@@ -12,3 +12,8 @@ dependencies = [
     "maxim-py==3.9.6",
     "python-dotenv>=1.1.1",
 ]
+
+[tool.uv]
+constraint-dependencies = [
+  "urllib3>=2.8.0",
+]

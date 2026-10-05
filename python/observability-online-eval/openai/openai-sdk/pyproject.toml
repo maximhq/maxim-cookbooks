@@ -10,3 +10,9 @@ dependencies = [
     "openai-agents>=0.0.14",
     "python-dotenv>=1.0.1",    
 ]
+
+[tool.uv]
+constraint-dependencies = [
+  "pyjwt>=2.15.0",
+  "urllib3>=2.8.0",
+]

@@ -14,3 +14,9 @@ dependencies = [
  "sounddevice>=0.4.6",
  "websockets>=12.0",
 ]
+
+[tool.uv]
+constraint-dependencies = [
+  "pyjwt>=2.15.0",
+  "urllib3>=2.8.0",
+]
