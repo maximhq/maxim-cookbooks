@@ -99,3 +99,9 @@ example_question = "Analyze AAPL"
 
 [tool.agent-starter-pack.settings]
 agent_directory = "financial_advisor"
+
+[tool.uv]
+constraint-dependencies = [
+  "pyjwt>=2.15.0",
+  "urllib3>=2.8.0",
+]
